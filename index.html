@@ -2,46 +2,59 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
 
-<title>Different Cultural Care</title>
+<title>Different Cultural Care for a Shared Family Hope</title>
 
-<link
-  rel="stylesheet"
-  href="https://cdn.jsdelivr.net/npm/reveal.js@5/dist/reveal.css"
-/>
+<link rel="stylesheet"
+href="https://cdn.jsdelivr.net/npm/reveal.js@5/dist/reveal.css">
 
 <style>
 
 /* =========================================================
-   CORE
-========================================================= */
+   01. GLOBAL SYSTEM
+   ========================================================= */
 
 :root{
-  --navy:#183A56;
-  --blue:#3E83B5;
+  --navy:#17324A;
+  --navy-2:#214863;
+  --blue:#3E7FAE;
+  --blue-2:#6FA8CC;
   --blue-light:#EAF4FA;
-  --blue-mid:#BFD9E8;
+  --blue-pale:#F5F9FC;
 
-  --orange:#D8894A;
-  --orange-light:#FBF0E7;
+  --orange:#D48A4D;
+  --orange-light:#FAEFE4;
 
-  --dark:#253746;
-  --gray:#6F7F8B;
-  --line:#D9E3E9;
+  --green:#5C8B79;
+  --green-light:#EDF5F1;
+
+  --red:#C86D63;
+  --red-light:#FAECEA;
+
+  --text:#263746;
+  --muted:#6D7D89;
+  --muted-2:#98A7B1;
+
+  --line:#D9E4EA;
+  --line-dark:#B7CAD5;
 
   --white:#FFFFFF;
-  --background:#F8FAFB;
+  --bg:#F8FAFB;
+
+  --shadow:0 16px 40px rgba(23,50,74,.07);
 }
 
 *{
   box-sizing:border-box;
 }
 
+html,
 body{
   margin:0;
-  background:var(--background);
-  color:var(--dark);
+  padding:0;
+  background:#F4F7F9;
+  color:var(--text);
   font-family:
     "Aptos",
     "Segoe UI",
@@ -51,9 +64,9 @@ body{
 }
 
 .reveal{
-  background:var(--white);
-  color:var(--dark);
-  font-size:28px;
+  background:#F4F7F9;
+  color:var(--text);
+  font-size:24px;
 }
 
 .reveal .slides{
@@ -61,75 +74,104 @@ body{
 }
 
 .reveal section{
-  padding:0 !important;
-  height:100%;
+  padding:0!important;
+  background:#fff;
   overflow:hidden;
-  background:var(--white);
 }
 
+.reveal .slides section{
+  min-height:100%;
+}
 
 /* =========================================================
-   GENERAL SLIDE
-========================================================= */
+   02. MASTER SLIDE
+   ========================================================= */
 
 .slide{
   width:100%;
   height:100%;
+  min-height:100%;
   position:relative;
-  padding:7vh 7vw;
+
+  padding:
+    6.5vh
+    7vw
+    6vh
+    7vw;
+
   overflow:hidden;
 
   background:
     radial-gradient(
-      circle at 100% 0%,
-      rgba(62,131,181,.07),
+      circle at 92% 8%,
+      rgba(62,127,174,.07),
       transparent 25%
     ),
     #fff;
 }
 
-.eyebrow{
-  color:var(--blue);
-  font-size:.72rem;
-  font-weight:800;
-  letter-spacing:.16em;
-  text-transform:uppercase;
-
-  display:flex;
-  align-items:center;
-  gap:12px;
-
-  margin-bottom:20px;
-}
-
-.eyebrow::before{
+.slide::before{
   content:"";
-  width:32px;
-  height:3px;
-  background:var(--blue);
+  position:absolute;
+  left:0;
+  top:0;
+  width:100%;
+  height:5px;
+  background:
+    linear-gradient(
+      90deg,
+      var(--navy) 0%,
+      var(--navy) 42%,
+      var(--blue) 42%,
+      var(--blue) 72%,
+      var(--orange) 72%,
+      var(--orange) 100%
+    );
+  z-index:20;
 }
 
-h1,h2,h3{
+.slide::after{
+  content:"";
+  position:absolute;
+  right:-100px;
+  bottom:-110px;
+  width:260px;
+  height:260px;
+  border:1px solid rgba(62,127,174,.09);
+  border-radius:50%;
+  pointer-events:none;
+}
+
+h1,
+h2,
+h3,
+h4{
   margin:0;
   color:var(--navy);
-  font-weight:800;
+  font-weight:750;
+  letter-spacing:-.035em;
 }
 
 h1{
-  font-size:clamp(3.2rem,6vw,6.5rem);
+  font-size:clamp(3.2rem,5.7vw,6rem);
   line-height:1.02;
 }
 
 h2{
-  font-size:clamp(3rem,5vw,5.3rem);
-  line-height:1.05;
+  font-size:clamp(2.4rem,4.3vw,4.3rem);
+  line-height:1.06;
 }
 
 h3{
-  font-size:1.5rem;
+  font-size:1.3rem;
+  line-height:1.2;
 }
 
-.blue{
+p{
+  margin:0;
+}
+
+.accent{
   color:var(--blue);
 }
 
@@ -137,230 +179,551 @@ h3{
   color:var(--orange);
 }
 
-.center{
-  text-align:center;
+.green{
+  color:var(--green);
 }
 
-.bottom{
+.muted{
+  color:var(--muted);
+}
+
+.eyebrow{
+  display:flex;
+  align-items:center;
+  gap:11px;
+
+  color:var(--blue);
+  font-size:.62rem;
+  letter-spacing:.18em;
+  text-transform:uppercase;
+  font-weight:800;
+
+  margin-bottom:18px;
+}
+
+.eyebrow::before{
+  content:"";
+  display:block;
+  width:30px;
+  height:2px;
+  background:var(--blue);
+}
+
+.subtitle{
+  margin-top:24px;
+  max-width:760px;
+
+  color:var(--muted);
+  font-size:.86rem;
+  line-height:1.75;
+}
+
+.small-label{
+  color:var(--muted-2);
+  font-size:.52rem;
+  letter-spacing:.15em;
+  text-transform:uppercase;
+  font-weight:800;
+}
+
+.bottom-bar{
   position:absolute;
   left:7vw;
   right:7vw;
-  bottom:3vh;
+  bottom:2.7vh;
 
   display:flex;
+  align-items:center;
   justify-content:space-between;
 
-  font-size:.52rem;
-  letter-spacing:.1em;
-  color:#98A7B1;
+  color:#9AA8B2;
+  font-size:.47rem;
+  letter-spacing:.11em;
   text-transform:uppercase;
+
+  z-index:10;
 }
 
+.bottom-bar .bar-left{
+  display:flex;
+  align-items:center;
+  gap:10px;
+}
+
+.bottom-bar .bar-dot{
+  width:5px;
+  height:5px;
+  border-radius:50%;
+  background:var(--blue);
+}
+
+.page-no{
+  font-weight:800;
+}
 
 /* =========================================================
-   LARGE PHOTO PLACEHOLDER
-========================================================= */
+   03. PHOTO PLACEHOLDER
+   ========================================================= */
 
-.photo{
+.photo-placeholder{
   position:relative;
+  overflow:hidden;
+
   background:
     linear-gradient(
       135deg,
-      #EEF4F7,
+      #EEF4F7 0%,
+      #FAFCFD 50%,
+      #E8F1F5 100%
+    );
+
+  border:1px solid #D5E1E8;
+  border-radius:22px;
+
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+
+.photo-placeholder::before{
+  content:"";
+  position:absolute;
+  inset:16px;
+
+  border:1px dashed #B5C8D3;
+  border-radius:15px;
+}
+
+.photo-placeholder::after{
+  content:"REAL PHOTO";
+  position:absolute;
+  left:25px;
+  top:22px;
+
+  color:#9AAAB5;
+  font-size:.49rem;
+  letter-spacing:.2em;
+  font-weight:800;
+}
+
+.photo-inner{
+  position:relative;
+  z-index:2;
+  width:80%;
+  text-align:center;
+  color:#81929E;
+}
+
+.photo-inner p{
+  font-size:.58rem;
+  line-height:1.55;
+}
+
+.photo-icon{
+  position:relative;
+  width:48px;
+  height:40px;
+  margin:0 auto 15px;
+
+  border:1px solid #A8BBC7;
+  border-radius:9px;
+}
+
+.photo-icon::before{
+  content:"";
+  position:absolute;
+  width:7px;
+  height:7px;
+  border:1px solid #A8BBC7;
+  border-radius:50%;
+  right:8px;
+  top:7px;
+}
+
+.photo-icon::after{
+  content:"";
+  position:absolute;
+  left:8px;
+  bottom:7px;
+  width:27px;
+  height:13px;
+
+  border-left:1px solid #A8BBC7;
+  border-top:1px solid #A8BBC7;
+
+  transform:skewY(-27deg);
+}
+
+/* =========================================================
+   04. AVATAR SYSTEM
+   ========================================================= */
+
+.avatar{
+  width:74px;
+  height:74px;
+  border-radius:50%;
+
+  overflow:hidden;
+
+  background:
+    linear-gradient(
+      135deg,
+      #E7F0F5,
       #F9FBFC
     );
 
-  border:1px solid #D5E0E7;
-  border-radius:20px;
+  border:2px solid #D5E2E9;
+
+  display:flex;
+  align-items:center;
+  justify-content:center;
+
+  color:var(--navy);
+  font-size:1rem;
+  font-weight:800;
+
+  flex-shrink:0;
+}
+
+.avatar img{
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  display:block;
+}
+
+.avatar-name{
+  margin-top:10px;
+  color:var(--navy);
+  font-size:.76rem;
+  font-weight:800;
+  text-align:center;
+}
+
+.avatar-role{
+  margin-top:4px;
+  color:var(--muted);
+  font-size:.5rem;
+  line-height:1.35;
+  text-align:center;
+}
+
+/* avatar introduction page */
+
+.people-page{
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  align-items:center;
+  text-align:center;
+}
+
+.people-header{
+  width:100%;
+  text-align:center;
+  margin-bottom:46px;
+}
+
+.people-header .eyebrow{
+  justify-content:center;
+}
+
+.people-header .eyebrow::before{
+  display:none;
+}
+
+.people-header p{
+  margin:17px auto 0;
+  max-width:680px;
+  color:var(--muted);
+  font-size:.75rem;
+  line-height:1.65;
+}
+
+.people-grid{
+  width:100%;
+  max-width:1120px;
+
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:28px;
+}
+
+.person-card{
+  position:relative;
+
+  min-height:350px;
+
+  padding:38px 30px 30px;
+
+  background:#fff;
+  border:1px solid var(--line);
+  border-radius:24px;
+
+  box-shadow:var(--shadow);
+
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+
+  transition:.3s ease;
+}
+
+.person-card::before{
+  content:"";
+  position:absolute;
+  top:0;
+  left:25%;
+  right:25%;
+  height:4px;
+  border-radius:0 0 8px 8px;
+  background:var(--blue);
+}
+
+.person-card.orange-card::before{
+  background:var(--orange);
+}
+
+.person-card.green-card::before{
+  background:var(--green);
+}
+
+.person-card .avatar{
+  width:112px;
+  height:112px;
+  font-size:1.35rem;
+  margin-bottom:15px;
+}
+
+.person-card h3{
+  margin-top:7px;
+  font-size:1.45rem;
+}
+
+.person-card .role{
+  margin-top:8px;
+  color:var(--blue);
+  font-size:.58rem;
+  letter-spacing:.1em;
+  font-weight:800;
+  text-transform:uppercase;
+}
+
+.person-card p{
+  margin-top:20px;
+  max-width:245px;
+  color:var(--muted);
+  font-size:.61rem;
+  line-height:1.65;
+}
+
+/* =========================================================
+   05. CHARACTER BAR
+   ========================================================= */
+
+.character-bar{
+  display:flex;
+  align-items:center;
+  gap:14px;
+
+  position:absolute;
+  top:5.4vh;
+  right:7vw;
+
+  z-index:15;
+
+  padding:8px 10px;
+
+  border:1px solid var(--line);
+  border-radius:999px;
+
+  background:rgba(255,255,255,.94);
+  box-shadow:0 8px 24px rgba(23,50,74,.05);
+}
+
+.mini-person{
+  display:flex;
+  align-items:center;
+  gap:7px;
+
+  opacity:.42;
+  transition:.3s ease;
+}
+
+.mini-person.active{
+  opacity:1;
+}
+
+.mini-person .mini-avatar{
+  width:35px;
+  height:35px;
+  border-radius:50%;
+
+  background:#EEF4F7;
+  border:1px solid #CCDCE4;
 
   display:flex;
   align-items:center;
   justify-content:center;
 
   overflow:hidden;
-}
 
-.photo::before{
-  content:"REAL PHOTO";
-  position:absolute;
-
-  top:20px;
-  left:24px;
-
-  font-size:.56rem;
+  font-size:.48rem;
   font-weight:800;
-  letter-spacing:.18em;
-
-  color:#8EA0AB;
-}
-
-.photo::after{
-  content:"";
-  position:absolute;
-  inset:22px;
-
-  border:1px dashed #B8C8D2;
-  border-radius:14px;
-}
-
-.photo-content{
-  position:relative;
-  z-index:2;
-
-  text-align:center;
-  color:#81939F;
-}
-
-.photo-icon{
-  width:55px;
-  height:45px;
-
-  margin:0 auto 18px;
-
-  border:2px solid #9EB2BF;
-  border-radius:9px;
-
-  position:relative;
-}
-
-.photo-icon::before{
-  content:"";
-
-  position:absolute;
-
-  width:9px;
-  height:9px;
-
-  border:2px solid #9EB2BF;
-  border-radius:50%;
-
-  top:7px;
-  right:8px;
-}
-
-.photo-icon::after{
-  content:"";
-
-  position:absolute;
-
-  left:8px;
-  right:8px;
-  bottom:7px;
-
-  height:18px;
-
-  border-left:2px solid #9EB2BF;
-  border-top:2px solid #9EB2BF;
-
-  transform:skewY(-28deg);
-}
-
-.photo-text{
-  font-size:.72rem;
-  line-height:1.5;
-  max-width:350px;
-}
-
-
-/* =========================================================
-   01 TITLE
-========================================================= */
-
-.title{
-  display:grid;
-  grid-template-columns:1.05fr .95fr;
-
-  gap:5vw;
-
-  align-items:center;
-}
-
-.title h1{
-  max-width:850px;
-}
-
-.title-line{
-  width:80px;
-  height:5px;
-
-  background:var(--blue);
-
-  margin-bottom:30px;
-}
-
-.title-sub{
-  margin-top:28px;
-
-  color:var(--gray);
-
-  font-size:1.05rem;
-  line-height:1.55;
-
-  max-width:700px;
-}
-
-.title-photo{
-  height:62vh;
-}
-
-
-/* =========================================================
-   02 CASE SETTING
-========================================================= */
-
-.setting{
-  display:grid;
-  grid-template-columns:.75fr 1.25fr;
-
-  gap:5vw;
-
-  align-items:center;
-}
-
-.setting h2{
-  font-size:4.5rem;
-}
-
-.big-keyword{
-  margin-top:35px;
-
-  font-size:2.1rem;
-  font-weight:800;
-
   color:var(--navy);
 }
 
-.setting-photo{
-  height:62vh;
+.mini-person .mini-avatar img{
+  width:100%;
+  height:100%;
+  object-fit:cover;
 }
 
+.mini-person span{
+  font-size:.48rem;
+  font-weight:800;
+  color:var(--navy);
+}
+
+.scene-tag{
+  position:absolute;
+  left:7vw;
+  top:5.6vh;
+
+  z-index:15;
+
+  padding:7px 12px;
+
+  border-radius:999px;
+  background:var(--blue-light);
+
+  color:var(--blue);
+
+  font-size:.47rem;
+  font-weight:800;
+  letter-spacing:.12em;
+  text-transform:uppercase;
+}
 
 /* =========================================================
-   ACT COVER
-========================================================= */
+   06. TITLE
+   ========================================================= */
 
-.act{
+.title-page{
   display:grid;
-  grid-template-columns:.8fr 1.2fr;
-
+  grid-template-columns:1.06fr .94fr;
   gap:5vw;
+  align-items:center;
+}
 
+.title-mark{
+  width:72px;
+  height:5px;
+  background:var(--blue);
+  margin-bottom:28px;
+}
+
+.title-page h1{
+  max-width:880px;
+}
+
+.title-page .subtitle{
+  max-width:720px;
+}
+
+.title-meta{
+  display:flex;
+  gap:10px;
+  flex-wrap:wrap;
+  margin-top:34px;
+}
+
+.meta-pill{
+  padding:9px 14px;
+
+  border:1px solid var(--line);
+  border-radius:999px;
+
+  background:#fff;
+
+  color:var(--muted);
+
+  font-size:.51rem;
+  letter-spacing:.08em;
+  text-transform:uppercase;
+  font-weight:700;
+}
+
+.title-photo{
+  height:57vh;
+}
+
+/* =========================================================
+   07. CASE SETTING
+   ========================================================= */
+
+.setting-page{
+  display:grid;
+  grid-template-columns:.82fr 1.18fr;
+  gap:5vw;
+  align-items:center;
+}
+
+.setting-cards{
+  display:grid;
+  gap:12px;
+  margin-top:31px;
+}
+
+.setting-card{
+  padding:18px 20px;
+
+  border:1px solid var(--line);
+  border-radius:14px;
+
+  background:#fff;
+
+  box-shadow:0 8px 24px rgba(23,50,74,.035);
+}
+
+.setting-card strong{
+  display:block;
+  color:var(--navy);
+  font-size:.73rem;
+  margin-bottom:5px;
+}
+
+.setting-card span{
+  color:var(--muted);
+  font-size:.57rem;
+}
+
+.setting-photo{
+  height:60vh;
+}
+
+/* =========================================================
+   08. ACT OPENERS
+   ========================================================= */
+
+.act-page{
+  display:grid;
+  grid-template-columns:.75fr 1.25fr;
+  gap:5vw;
   align-items:center;
 }
 
 .act-number{
-  font-size:10rem;
-
-  line-height:.75;
-
-  font-weight:900;
-
-  color:#E8F0F4;
-
   position:absolute;
-
-  top:-30px;
   left:-15px;
+  top:-40px;
+
+  color:#EAF0F4;
+
+  font-size:clamp(7rem,14vw,14rem);
+  line-height:.8;
+  font-weight:850;
 
   z-index:0;
 }
@@ -370,1023 +733,1280 @@ h3{
   z-index:2;
 }
 
-.act h2{
+.act-title{
   position:relative;
+  font-size:clamp(2.6rem,4.7vw,4.7rem);
+  max-width:800px;
 }
 
 .act-question{
-  margin-top:40px;
+  margin-top:31px;
 
-  display:inline-block;
+  padding:17px 20px;
 
-  padding:17px 24px;
+  border-left:3px solid var(--blue);
 
-  border-left:5px solid var(--blue);
-
-  background:var(--blue-light);
+  background:var(--blue-pale);
 
   color:var(--navy);
 
-  font-size:1.2rem;
-  font-weight:800;
+  font-size:.77rem;
+  font-weight:700;
+
+  max-width:600px;
 }
 
 .act-photo{
-  height:62vh;
+  height:60vh;
 }
-
 
 /* =========================================================
-   04 CORE CONFLICT
-========================================================= */
+   09. CONFLICT — REDESIGNED CENTER
+   ========================================================= */
 
-.conflict{
-  display:flex;
-  flex-direction:column;
-  justify-content:center;
-  align-items:center;
+.conflict-page{
+  padding-top:8vh;
+  padding-bottom:7vh;
+}
 
+.conflict-header{
   text-align:center;
+  margin-bottom:38px;
 }
 
-.conflict h2{
-  font-size:4.5rem;
-}
-
-.conflict-sub{
-  margin-top:20px;
-
-  font-size:1.05rem;
-
-  color:var(--gray);
-}
-
-.conflict-visual{
-  width:90%;
-
-  margin-top:45px;
-
-  display:grid;
-  grid-template-columns:1fr .35fr 1fr;
-
-  align-items:center;
-
-  gap:30px;
-}
-
-.conflict-box{
-  min-height:230px;
-
-  border-radius:22px;
-
-  padding:35px;
-
-  display:flex;
-  flex-direction:column;
-
+.conflict-header .eyebrow{
   justify-content:center;
-
-  text-align:center;
-
-  border:2px solid;
 }
 
-.conflict-box.truth{
-  border-color:var(--blue);
-  background:#F2F8FC;
+.conflict-header .eyebrow::before{
+  display:none;
 }
 
-.conflict-box.protection{
-  border-color:var(--orange);
-  background:var(--orange-light);
+.conflict-header h2{
+  font-size:clamp(2.4rem,4vw,4rem);
 }
 
-.conflict-box .main{
-  font-size:2.5rem;
-  font-weight:900;
-
-  color:var(--navy);
+.conflict-header p{
+  margin:13px auto 0;
+  color:var(--muted);
+  font-size:.68rem;
 }
 
-.conflict-box .sub{
-  margin-top:12px;
-
-  font-size:1rem;
-  font-weight:700;
-
-  color:var(--gray);
-}
-
-.conflict-vs{
-  width:90px;
-  height:90px;
-
-  margin:auto;
-
-  border-radius:50%;
-
-  background:var(--navy);
-
-  color:#fff;
-
-  display:flex;
-  align-items:center;
-  justify-content:center;
-
-  font-size:.8rem;
-  font-weight:900;
-  letter-spacing:.1em;
-}
-
-.shared{
-  margin-top:35px;
-
-  padding:18px 35px;
-
-  border-radius:999px;
-
-  background:#F4F7F9;
-
-  color:var(--navy);
-
-  font-size:1rem;
-  font-weight:800;
-}
-
-
-/* =========================================================
-   05 ACT TWO
-========================================================= */
-
-.balance{
-  display:grid;
-  grid-template-columns:1fr 1fr;
-
-  gap:5vw;
-
-  align-items:center;
-}
-
-.balance h2{
-  font-size:4.2rem;
-}
-
-.balance-question{
-  margin-top:30px;
-
-  font-size:1.25rem;
-  font-weight:800;
-
-  color:var(--blue);
-}
-
-.balance-diagram{
+.conflict-stage{
   position:relative;
 
-  height:500px;
+  width:100%;
+  max-width:1120px;
 
-  display:flex;
-  align-items:center;
-  justify-content:center;
-}
-
-.circle{
-  width:330px;
-  height:330px;
-
-  border-radius:50%;
-
-  border:2px solid var(--blue-mid);
-
-  display:flex;
-  align-items:center;
-  justify-content:center;
-
-  background:#F8FCFE;
-}
-
-.circle-inner{
-  text-align:center;
-}
-
-.circle-inner strong{
-  display:block;
-
-  font-size:2rem;
-
-  color:var(--navy);
-}
-
-.circle-inner span{
-  display:block;
-
-  margin-top:12px;
-
-  font-size:.85rem;
-
-  color:var(--gray);
-}
-
-.balance-node{
-  position:absolute;
-
-  padding:16px 25px;
-
-  border-radius:999px;
-
-  background:#fff;
-
-  border:2px solid var(--line);
-
-  font-weight:900;
-
-  color:var(--navy);
-
-  font-size:1rem;
-}
-
-.balance-node.truth{
-  top:15px;
-  left:20px;
-  border-color:var(--blue);
-}
-
-.balance-node.protection{
-  bottom:15px;
-  left:20px;
-  border-color:var(--orange);
-}
-
-.balance-node.shared{
-  right:0;
-  top:50%;
-
-  transform:translateY(-50%);
-
-  border-color:var(--navy);
-
-  background:var(--navy);
-  color:#fff;
-}
-
-
-/* =========================================================
-   06 ACT THREE
-========================================================= */
-
-.convergence{
-  display:flex;
-  flex-direction:column;
-
-  justify-content:center;
-  align-items:center;
-
-  text-align:center;
-}
-
-.convergence h2{
-  font-size:4.5rem;
-}
-
-.convergence-sub{
-  margin-top:22px;
-
-  color:var(--gray);
-
-  font-size:1.1rem;
-}
-
-.convergence-line{
-  margin-top:55px;
-
-  display:flex;
-  align-items:center;
-  justify-content:center;
-}
-
-.conv-node{
-  min-width:190px;
-
-  padding:25px 20px;
-
-  border:2px solid var(--line);
-
-  border-radius:18px;
-
-  background:#fff;
-
-  color:var(--navy);
-
-  font-size:1.05rem;
-  font-weight:900;
-}
-
-.conv-node.final{
-  border-color:var(--blue);
-
-  background:var(--blue-light);
-}
-
-.conv-arrow{
-  width:65px;
-  height:2px;
-
-  background:#B6C9D5;
-
-  position:relative;
-}
-
-.conv-arrow::after{
-  content:"";
-
-  position:absolute;
-
-  right:0;
-  top:-5px;
-
-  width:11px;
-  height:11px;
-
-  border-right:2px solid #B6C9D5;
-  border-top:2px solid #B6C9D5;
-
-  transform:rotate(45deg);
-}
-
-
-/* =========================================================
-   CASE ANALYSIS COVER
-========================================================= */
-
-.analysis-cover{
-  display:flex;
-
-  align-items:center;
-  justify-content:center;
-
-  text-align:center;
-}
-
-.analysis-cover h2{
-  font-size:5.2rem;
-}
-
-.analysis-cover .line{
-  width:100px;
-  height:5px;
-
-  background:var(--blue);
-
-  margin:35px auto;
-}
-
-.analysis-cover p{
-  color:var(--gray);
-
-  font-size:1.15rem;
-
-  max-width:800px;
-
-  margin:auto;
-}
-
-
-/* =========================================================
-   CASE DESCRIPTION
-========================================================= */
-
-.description{
-  display:flex;
-  flex-direction:column;
-
-  justify-content:center;
-}
-
-.description h2{
-  font-size:4.1rem;
-}
-
-.description-grid{
-  margin-top:45px;
+  margin:0 auto;
 
   display:grid;
-  grid-template-columns:repeat(3,1fr);
+  grid-template-columns:1fr 150px 1fr;
+  gap:26px;
 
-  gap:25px;
+  align-items:center;
 }
 
-.description-card{
-  padding:32px;
+.conflict-card{
+  min-height:315px;
 
-  min-height:190px;
+  padding:35px 38px;
 
-  border-radius:20px;
+  border-radius:24px;
 
   border:1px solid var(--line);
 
   background:#fff;
 
+  box-shadow:var(--shadow);
+
+  position:relative;
+}
+
+.conflict-card.truth-card{
+  border-top:6px solid var(--blue);
+}
+
+.conflict-card.protection-card{
+  border-top:6px solid var(--orange);
+}
+
+.conflict-card .card-kicker{
+  color:var(--muted);
+  font-size:.5rem;
+  font-weight:800;
+  letter-spacing:.15em;
+  text-transform:uppercase;
+}
+
+.conflict-card h3{
+  margin-top:16px;
+  font-size:2.2rem;
+  letter-spacing:-.04em;
+}
+
+.conflict-card .core-word{
+  margin-top:4px;
+  color:var(--muted);
+  font-size:.62rem;
+}
+
+.conflict-list{
+  margin-top:24px;
+  display:grid;
+  gap:10px;
+}
+
+.conflict-list div{
+  display:flex;
+  align-items:center;
+  gap:9px;
+
+  color:var(--text);
+  font-size:.64rem;
+}
+
+.conflict-list i{
+  width:6px;
+  height:6px;
+  border-radius:50%;
+  background:var(--blue);
+}
+
+.protection-card .conflict-list i{
+  background:var(--orange);
+}
+
+.conflict-center{
+  position:relative;
+
+  height:315px;
+
   display:flex;
   flex-direction:column;
-
+  align-items:center;
   justify-content:center;
 
+  z-index:3;
+}
+
+.conflict-center::before,
+.conflict-center::after{
+  content:"";
+  position:absolute;
+
+  width:1px;
+  height:95px;
+
+  background:#C5D5DE;
+}
+
+.conflict-center::before{
+  top:0;
+}
+
+.conflict-center::after{
+  bottom:0;
+}
+
+.vs-circle{
+  width:100px;
+  height:100px;
+
+  border-radius:50%;
+
+  background:var(--navy);
+
+  color:#fff;
+
+  display:flex;
+  align-items:center;
+  justify-content:center;
+
+  font-size:.62rem;
+  font-weight:850;
+  letter-spacing:.08em;
+
+  box-shadow:0 14px 35px rgba(23,50,74,.16);
+
+  position:relative;
+}
+
+.vs-circle::after{
+  content:"";
+  position:absolute;
+  inset:-8px;
+  border:1px solid #CBD9E0;
+  border-radius:50%;
+}
+
+.conflict-center span{
+  margin-top:15px;
+  color:var(--muted);
+  font-size:.48rem;
+  font-weight:800;
+  letter-spacing:.1em;
+  text-transform:uppercase;
+}
+
+.shared-goal{
+  width:100%;
+  max-width:900px;
+
+  margin:30px auto 0;
+
+  padding:17px 25px;
+
+  border-radius:14px;
+
+  background:var(--green-light);
+
+  color:var(--green);
+
+  text-align:center;
+
+  font-size:.62rem;
+  font-weight:850;
+  letter-spacing:.06em;
+}
+
+/* =========================================================
+   10. BRIDGE
+   ========================================================= */
+
+.bridge-page{
+  display:grid;
+  grid-template-columns:.95fr 1.05fr;
+  gap:5vw;
+  align-items:center;
+}
+
+.bridge-visual{
+  position:relative;
+  min-height:460px;
+
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+
+.bridge-node{
+  position:absolute;
+
+  width:220px;
+
+  padding:22px;
+
+  border:1px solid var(--line);
+  border-radius:18px;
+
+  background:#fff;
+
+  text-align:center;
+
+  box-shadow:var(--shadow);
+}
+
+.bridge-node.top{
+  top:5px;
+  left:0;
+}
+
+.bridge-node.bottom{
+  bottom:5px;
+  left:0;
+}
+
+.bridge-node.center{
+  width:270px;
+  right:0;
+  top:50%;
+
+  transform:translateY(-50%);
+
+  background:var(--blue-pale);
+  border-color:#AFC9D9;
+}
+
+.bridge-node strong{
+  display:block;
+  color:var(--navy);
+  font-size:.76rem;
+}
+
+.bridge-node span{
+  display:block;
+  margin-top:7px;
+  color:var(--muted);
+  font-size:.54rem;
+  line-height:1.5;
+}
+
+.bridge-line{
+  position:absolute;
+  left:175px;
+
+  width:170px;
+  height:1px;
+
+  background:#AEC3D0;
+}
+
+.bridge-line.one{
+  top:29%;
+  transform:rotate(15deg);
+}
+
+.bridge-line.two{
+  bottom:29%;
+  transform:rotate(-15deg);
+}
+
+/* =========================================================
+   11. ACT THREE
+   ========================================================= */
+
+.convergence-page{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:5vw;
+  align-items:center;
+}
+
+.convergence-steps{
+  display:grid;
+  gap:11px;
+  margin-top:32px;
+}
+
+.convergence-step{
+  display:flex;
+  align-items:center;
+  gap:14px;
+
+  padding:14px 17px;
+
+  border:1px solid var(--line);
+  border-radius:13px;
+
+  background:#fff;
+}
+
+.step-number{
+  width:31px;
+  height:31px;
+
+  border-radius:50%;
+
+  background:var(--blue-light);
+
+  color:var(--blue);
+
+  display:flex;
+  align-items:center;
+  justify-content:center;
+
+  font-size:.56rem;
+  font-weight:850;
+
+  flex-shrink:0;
+}
+
+.convergence-step strong{
+  color:var(--navy);
+  font-size:.64rem;
+}
+
+.convergence-step span{
+  display:block;
+  margin-top:4px;
+  color:var(--muted);
+  font-size:.52rem;
+}
+
+.convergence-photo{
+  height:59vh;
+}
+
+/* =========================================================
+   12. ANALYSIS COVER
+   ========================================================= */
+
+.analysis-cover{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  text-align:center;
+
+  background:
+    radial-gradient(
+      circle at center,
+      rgba(62,127,174,.09),
+      transparent 47%
+    ),
+    #fff;
+}
+
+.analysis-inner{
+  max-width:1000px;
+}
+
+.analysis-kicker{
+  display:inline-flex;
+  padding:8px 14px;
+
+  border-radius:999px;
+
+  background:var(--blue-light);
+
+  color:var(--blue);
+
+  font-size:.52rem;
+  font-weight:850;
+  letter-spacing:.15em;
+  text-transform:uppercase;
+}
+
+.analysis-cover h2{
+  margin-top:23px;
+  font-size:clamp(3.1rem,6vw,6rem);
+}
+
+.analysis-cover p{
+  max-width:740px;
+  margin:25px auto 0;
+
+  color:var(--muted);
+  font-size:.76rem;
+  line-height:1.7;
+}
+
+/* =========================================================
+   13. CASE DESCRIPTION
+   ========================================================= */
+
+.description-page{
+  display:grid;
+  grid-template-columns:.8fr 1.2fr;
+  gap:5vw;
+  align-items:center;
+}
+
+.description-photo{
+  height:56vh;
+}
+
+.description-points{
+  display:grid;
+  gap:13px;
+  margin-top:28px;
+}
+
+.description-point{
+  display:grid;
+  grid-template-columns:50px 1fr;
+  gap:14px;
+
+  padding:16px;
+
+  border:1px solid var(--line);
+  border-radius:14px;
+  background:#fff;
+}
+
+.description-point .number{
+  width:36px;
+  height:36px;
+  border-radius:10px;
+
+  background:var(--blue-light);
+
+  color:var(--blue);
+
+  display:flex;
+  align-items:center;
+  justify-content:center;
+
+  font-size:.56rem;
+  font-weight:850;
+}
+
+.description-point strong{
+  display:block;
+  color:var(--navy);
+  font-size:.66rem;
+}
+
+.description-point span{
+  display:block;
+  margin-top:5px;
+  color:var(--muted);
+  font-size:.55rem;
+  line-height:1.5;
+}
+
+/* =========================================================
+   14. MAIN FLOWCHART
+   ========================================================= */
+
+.flow-page{
+  padding-top:7vh;
+}
+
+.flow-header{
   text-align:center;
 }
 
-.description-card strong{
-  font-size:1.55rem;
-
-  color:var(--navy);
-}
-
-.description-card span{
-  margin-top:12px;
-
-  font-size:.8rem;
-
-  color:var(--gray);
-}
-
-
-/* =========================================================
-   MAIN FLOWCHART
-========================================================= */
-
-.flow{
-  display:flex;
-  flex-direction:column;
-
+.flow-header .eyebrow{
   justify-content:center;
 }
 
-.flow h2{
-  font-size:4rem;
+.flow-header .eyebrow::before{
+  display:none;
 }
 
-.flow-sub{
-  margin-top:15px;
-
-  color:var(--gray);
-
-  font-size:1rem;
+.flow-header p{
+  margin:13px auto 0;
+  max-width:700px;
+  color:var(--muted);
+  font-size:.66rem;
 }
 
-.flowchart{
-  margin-top:50px;
+.main-flow{
+  position:relative;
+
+  max-width:1180px;
+
+  margin:43px auto 0;
 
   display:flex;
-
   flex-direction:column;
-
   align-items:center;
 }
 
 .flow-row{
-  display:flex;
+  width:100%;
+
+  display:grid;
+  grid-template-columns:1fr 80px 1fr 80px 1fr;
 
   align-items:center;
-
-  justify-content:center;
 }
 
-.flow-node{
-  width:245px;
+.flow-box{
+  min-height:135px;
 
-  min-height:110px;
+  padding:22px;
 
-  border-radius:17px;
-
-  border:2px solid var(--line);
+  border:1px solid var(--line);
+  border-radius:18px;
 
   background:#fff;
 
+  box-shadow:0 10px 28px rgba(23,50,74,.05);
+
   display:flex;
-
   flex-direction:column;
-
   justify-content:center;
 
+  position:relative;
+}
+
+.flow-box.primary{
+  border-top:5px solid var(--blue);
+}
+
+.flow-box.secondary{
+  border-top:5px solid var(--orange);
+}
+
+.flow-box.critical{
+  border-top:5px solid var(--red);
+}
+
+.flow-box strong{
+  color:var(--navy);
+  font-size:.74rem;
+  line-height:1.35;
+}
+
+.flow-box span{
+  margin-top:7px;
+  color:var(--muted);
+  font-size:.54rem;
+  line-height:1.5;
+}
+
+.flow-number{
+  position:absolute;
+  top:14px;
+  right:17px;
+
+  color:#B7C7D1;
+  font-size:.47rem;
+  font-weight:850;
+}
+
+.flow-connector{
+  position:relative;
+  height:2px;
+  background:#C0D0D9;
+}
+
+.flow-connector::after{
+  content:"";
+  position:absolute;
+  right:0;
+  top:-4px;
+
+  width:8px;
+  height:8px;
+
+  border-right:2px solid #9FB6C4;
+  border-top:2px solid #9FB6C4;
+
+  transform:rotate(45deg);
+}
+
+.flow-down{
+  width:2px;
+  height:45px;
+  background:#C0D0D9;
+  position:relative;
+}
+
+.flow-down::after{
+  content:"";
+  position:absolute;
+
+  bottom:0;
+  left:-4px;
+
+  width:8px;
+  height:8px;
+
+  border-right:2px solid #9FB6C4;
+  border-bottom:2px solid #9FB6C4;
+
+  transform:rotate(45deg);
+}
+
+.flow-final{
+  width:76%;
+
+  margin-top:30px;
+
+  padding:19px 25px;
+
+  border-radius:16px;
+
+  background:var(--navy);
+
+  color:#fff;
+
+  text-align:center;
+}
+
+.flow-final strong{
+  display:block;
+  font-size:.78rem;
+  letter-spacing:.03em;
+}
+
+.flow-final span{
+  display:block;
+  margin-top:7px;
+  color:rgba(255,255,255,.72);
+  font-size:.53rem;
+}
+
+/* =========================================================
+   15. THREE PERSON ANALYSIS
+   ========================================================= */
+
+.character-page{
+  display:grid;
+  grid-template-columns:.7fr 1.3fr;
+  gap:5vw;
   align-items:center;
+}
+
+.character-left{
+  position:relative;
+}
+
+.character-name{
+  margin-top:8px;
+
+  color:#E6EDF2;
+
+  font-size:clamp(4rem,7vw,7rem);
+
+  font-weight:850;
+
+  line-height:.84;
+  letter-spacing:-.06em;
+}
+
+.character-role{
+  margin-top:20px;
+
+  color:var(--blue);
+
+  font-size:.56rem;
+  letter-spacing:.13em;
+  text-transform:uppercase;
+  font-weight:850;
+}
+
+.character-summary{
+  margin-top:22px;
+  max-width:370px;
+
+  color:var(--muted);
+  font-size:.63rem;
+  line-height:1.7;
+}
+
+.character-avatar-large{
+  width:100px;
+  height:100px;
+
+  border-radius:50%;
+
+  background:#EEF4F7;
+  border:2px solid #D1DFE7;
+
+  display:flex;
+  align-items:center;
+  justify-content:center;
+
+  overflow:hidden;
+
+  color:var(--navy);
+  font-size:1.1rem;
+  font-weight:850;
+}
+
+.character-avatar-large img{
+  width:100%;
+  height:100%;
+  object-fit:cover;
+}
+
+.analysis-card{
+  padding:31px;
+
+  border:1px solid var(--line);
+  border-radius:22px;
+
+  background:#fff;
+
+  box-shadow:var(--shadow);
+}
+
+.analysis-core{
+  padding:20px 22px;
+
+  border-radius:14px;
+
+  background:var(--blue-pale);
+
+  border-left:4px solid var(--blue);
+}
+
+.analysis-core.orange-core{
+  background:var(--orange-light);
+  border-left-color:var(--orange);
+}
+
+.analysis-core.green-core{
+  background:var(--green-light);
+  border-left-color:var(--green);
+}
+
+.analysis-core strong{
+  display:block;
+
+  color:var(--navy);
+
+  font-size:1.22rem;
+}
+
+.analysis-core span{
+  display:block;
+
+  margin-top:7px;
+
+  color:var(--muted);
+
+  font-size:.57rem;
+  line-height:1.5;
+}
+
+.analysis-process{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+
+  gap:10px;
+
+  margin-top:18px;
+}
+
+.process-item{
+  position:relative;
+
+  padding:17px 13px;
+
+  border:1px solid var(--line);
+  border-radius:12px;
+
+  background:#fff;
+
+  min-height:118px;
+}
+
+.process-item::after{
+  content:"→";
+
+  position:absolute;
+
+  right:-12px;
+  top:50%;
+
+  transform:translateY(-50%);
+
+  color:#A9BDC8;
+
+  font-size:.8rem;
+
+  z-index:3;
+}
+
+.process-item:last-child::after{
+  display:none;
+}
+
+.process-item .process-no{
+  color:var(--blue);
+  font-size:.45rem;
+  font-weight:850;
+  letter-spacing:.1em;
+}
+
+.process-item strong{
+  display:block;
+
+  margin-top:10px;
+
+  color:var(--navy);
+
+  font-size:.59rem;
+  line-height:1.35;
+}
+
+.process-item span{
+  display:block;
+
+  margin-top:6px;
+
+  color:var(--muted);
+
+  font-size:.48rem;
+  line-height:1.45;
+}
+
+/* =========================================================
+   16. THEORY
+   ========================================================= */
+
+.theory-page{
+  padding-top:6.5vh;
+}
+
+.theory-header{
+  text-align:center;
+}
+
+.theory-header .eyebrow{
+  justify-content:center;
+}
+
+.theory-header .eyebrow::before{
+  display:none;
+}
+
+.theory-header p{
+  margin:13px auto 0;
+  max-width:720px;
+
+  color:var(--muted);
+  font-size:.65rem;
+  line-height:1.6;
+}
+
+.theory-grid{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+
+  gap:18px;
+
+  max-width:1150px;
+
+  margin:34px auto 0;
+}
+
+.theory-card{
+  min-height:300px;
+
+  padding:27px;
+
+  border:1px solid var(--line);
+  border-radius:20px;
+
+  background:#fff;
+
+  box-shadow:0 10px 30px rgba(23,50,74,.045);
+
+  position:relative;
+}
+
+.theory-card:nth-child(1){
+  border-top:5px solid var(--blue);
+}
+
+.theory-card:nth-child(2){
+  border-top:5px solid var(--orange);
+}
+
+.theory-card:nth-child(3){
+  border-top:5px solid var(--green);
+}
+
+.theory-no{
+  color:var(--muted-2);
+
+  font-size:.47rem;
+  letter-spacing:.14em;
+  font-weight:850;
+}
+
+.theory-card h3{
+  margin-top:23px;
+  font-size:1.18rem;
+}
+
+.theory-card p{
+  margin-top:12px;
+
+  color:var(--muted);
+
+  font-size:.59rem;
+  line-height:1.65;
+}
+
+.theory-link{
+  position:absolute;
+
+  left:27px;
+  right:27px;
+  bottom:24px;
+
+  padding:10px;
+
+  border-radius:9px;
+
+  background:var(--blue-pale);
+
+  color:var(--blue);
 
   text-align:center;
 
-  padding:20px;
+  font-size:.48rem;
+  font-weight:800;
 }
 
-.flow-node strong{
+/* =========================================================
+   17. REFRAMING
+   ========================================================= */
+
+.reframe-page{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:5vw;
+  align-items:center;
+}
+
+.reframe-diagram{
+  position:relative;
+  min-height:480px;
+}
+
+.reframe-box{
+  position:absolute;
+
+  width:275px;
+
+  padding:25px;
+
+  border:1px solid var(--line);
+  border-radius:18px;
+
+  background:#fff;
+
+  box-shadow:var(--shadow);
+}
+
+.reframe-box.a{
+  left:0;
+  top:20px;
+  border-top:4px solid var(--blue);
+}
+
+.reframe-box.b{
+  left:0;
+  bottom:20px;
+  border-top:4px solid var(--orange);
+}
+
+.reframe-box.c{
+  right:0;
+  top:50%;
+
+  transform:translateY(-50%);
+
+  background:var(--green-light);
+  border-color:#B7D1C5;
+  border-top:4px solid var(--green);
+}
+
+.reframe-box strong{
+  display:block;
+
   color:var(--navy);
 
-  font-size:1rem;
+  font-size:.75rem;
 }
 
-.flow-node span{
-  margin-top:7px;
+.reframe-box span{
+  display:block;
 
-  color:var(--gray);
+  margin-top:8px;
+
+  color:var(--muted);
+
+  font-size:.56rem;
+  line-height:1.55;
+}
+
+.reframe-connector{
+  position:absolute;
+
+  left:245px;
+
+  width:170px;
+  height:1px;
+
+  background:#AFC3CF;
+}
+
+.reframe-connector.one{
+  top:31%;
+  transform:rotate(13deg);
+}
+
+.reframe-connector.two{
+  bottom:31%;
+  transform:rotate(-13deg);
+}
+
+.reframe-text{
+  padding-left:30px;
+  border-left:3px solid var(--blue);
+}
+
+.reframe-text p{
+  margin-top:23px;
+
+  max-width:600px;
+
+  color:var(--muted);
+
+  font-size:.72rem;
+  line-height:1.8;
+}
+
+/* =========================================================
+   18. FINAL SYNTHESIS
+   ========================================================= */
+
+.synthesis-page{
+  padding-top:7vh;
+}
+
+.synthesis-header{
+  text-align:center;
+}
+
+.synthesis-header .eyebrow{
+  justify-content:center;
+}
+
+.synthesis-header .eyebrow::before{
+  display:none;
+}
+
+.synthesis-header p{
+  margin:13px auto 0;
+
+  color:var(--muted);
 
   font-size:.65rem;
 }
 
-.flow-node.blue{
-  border-color:var(--blue);
-  background:var(--blue-light);
-}
+.synthesis-flow{
+  max-width:1180px;
 
-.flow-node.orange{
-  border-color:var(--orange);
-  background:var(--orange-light);
-}
-
-.flow-arrow-down{
-  width:2px;
-  height:45px;
-
-  background:#AFC2CD;
-
-  position:relative;
-}
-
-.flow-arrow-down::after{
-  content:"";
-
-  position:absolute;
-
-  bottom:0;
-  left:-5px;
-
-  width:10px;
-  height:10px;
-
-  border-right:2px solid #AFC2CD;
-  border-bottom:2px solid #AFC2CD;
-
-  transform:rotate(45deg);
-}
-
-.flow-arrow-right{
-  width:60px;
-  height:2px;
-
-  background:#AFC2CD;
-
-  position:relative;
-}
-
-.flow-arrow-right::after{
-  content:"";
-
-  position:absolute;
-
-  right:0;
-  top:-5px;
-
-  width:10px;
-  height:10px;
-
-  border-right:2px solid #AFC2CD;
-  border-top:2px solid #AFC2CD;
-
-  transform:rotate(45deg);
-}
-
-
-/* =========================================================
-   CHARACTER FLOW
-========================================================= */
-
-.people{
-  display:flex;
-  flex-direction:column;
-
-  justify-content:center;
-}
-
-.people h2{
-  text-align:center;
-
-  font-size:3.8rem;
-}
-
-.people-flow{
-  margin-top:45px;
+  margin:44px auto 0;
 
   display:grid;
 
-  grid-template-columns:repeat(3,1fr);
-
-  gap:20px;
-
-  align-items:center;
-}
-
-.person{
-  padding:30px 20px;
-
-  border-radius:20px;
-
-  text-align:center;
-
-  border:2px solid var(--line);
-
-  background:#fff;
-}
-
-.person .name{
-  font-size:2rem;
-
-  font-weight:900;
-
-  color:var(--navy);
-}
-
-.person .role{
-  margin-top:8px;
-
-  font-size:.75rem;
-
-  font-weight:800;
-
-  color:var(--blue);
-}
-
-.person .keyword{
-  margin-top:20px;
-
-  padding:12px;
-
-  border-radius:10px;
-
-  background:#F5F8FA;
-
-  font-size:1rem;
-
-  font-weight:900;
-
-  color:var(--navy);
-}
-
-.person-arrow{
-  position:absolute;
-  transform:translateX(100%);
-}
-
-
-/* =========================================================
-   INDIVIDUAL ANALYSIS
-========================================================= */
-
-.individual{
-  display:grid;
-
-  grid-template-columns:.65fr 1.35fr;
-
-  gap:5vw;
+  grid-template-columns:
+    1fr 35px
+    1fr 35px
+    1fr 35px
+    1fr 35px
+    1fr;
 
   align-items:center;
 }
 
-.individual-left{
-  position:relative;
-}
+.synthesis-node{
+  min-height:100px;
 
-.individual-name{
-  font-size:6rem;
+  padding:17px 10px;
 
-  line-height:.8;
-
-  font-weight:900;
-
-  color:#E8EFF3;
-}
-
-.individual-real-name{
-  margin-top:-5px;
-
-  font-size:3.4rem;
-
-  font-weight:900;
-
-  color:var(--navy);
-}
-
-.individual-role{
-  margin-top:18px;
-
-  color:var(--blue);
-
-  font-size:.85rem;
-
-  font-weight:800;
-
-  letter-spacing:.08em;
-}
-
-.individual-flow{
-  display:flex;
-
-  align-items:center;
-
-  justify-content:center;
-}
-
-.individual-node{
-  min-width:220px;
-
-  min-height:130px;
-
-  padding:25px;
-
-  border-radius:18px;
-
-  border:2px solid var(--line);
+  border:1px solid var(--line);
+  border-radius:15px;
 
   background:#fff;
 
   display:flex;
-
-  flex-direction:column;
-
+  align-items:center;
   justify-content:center;
 
   text-align:center;
+
+  box-shadow:0 8px 20px rgba(23,50,74,.035);
 }
 
-.individual-node strong{
+.synthesis-node strong{
   color:var(--navy);
-
-  font-size:1.25rem;
+  font-size:.57rem;
+  line-height:1.35;
 }
 
-.individual-node span{
-  margin-top:9px;
-
-  color:var(--gray);
-
-  font-size:.7rem;
-}
-
-.individual-arrow{
-  width:55px;
+.synthesis-arrow{
   height:2px;
-
-  background:#AFC2CD;
-
+  background:#B5C8D3;
   position:relative;
 }
 
-.individual-arrow::after{
+.synthesis-arrow::after{
   content:"";
 
   position:absolute;
-
   right:0;
-  top:-5px;
+  top:-4px;
 
-  width:10px;
-  height:10px;
+  width:8px;
+  height:8px;
 
-  border-right:2px solid #AFC2CD;
-  border-top:2px solid #AFC2CD;
+  border-right:2px solid #9FB6C4;
+  border-top:2px solid #9FB6C4;
 
   transform:rotate(45deg);
 }
 
+.synthesis-final{
+  max-width:850px;
 
-/* =========================================================
-   THEORY
-========================================================= */
+  margin:45px auto 0;
 
-.theory{
-  display:flex;
-  flex-direction:column;
-
-  justify-content:center;
-}
-
-.theory h2{
-  text-align:center;
-
-  font-size:4rem;
-}
-
-.theory-flow{
-  margin-top:50px;
-
-  display:flex;
-
-  align-items:center;
-
-  justify-content:center;
-}
-
-.theory-node{
-  width:240px;
-
-  min-height:150px;
-
-  border-radius:20px;
-
-  border:2px solid var(--line);
-
-  background:#fff;
-
-  padding:25px;
-
-  display:flex;
-
-  flex-direction:column;
-
-  justify-content:center;
-
-  align-items:center;
-
-  text-align:center;
-}
-
-.theory-node strong{
-  font-size:1.25rem;
-
-  color:var(--navy);
-}
-
-.theory-node span{
-  margin-top:10px;
-
-  font-size:.68rem;
-
-  color:var(--gray);
-}
-
-.theory-node.highlight{
-  border-color:var(--blue);
-
-  background:var(--blue-light);
-}
-
-.theory-arrow{
-  width:65px;
-  height:2px;
-
-  background:#AFC2CD;
-
-  position:relative;
-}
-
-.theory-arrow::after{
-  content:"";
-
-  position:absolute;
-
-  right:0;
-  top:-5px;
-
-  width:10px;
-  height:10px;
-
-  border-right:2px solid #AFC2CD;
-  border-top:2px solid #AFC2CD;
-
-  transform:rotate(45deg);
-}
-
-
-/* =========================================================
-   FINAL FLOW
-========================================================= */
-
-.final{
-  display:flex;
-  flex-direction:column;
-
-  justify-content:center;
-
-  align-items:center;
-
-  text-align:center;
-}
-
-.final h2{
-  font-size:4.5rem;
-}
-
-.final-flow{
-  margin-top:55px;
-
-  display:flex;
-
-  align-items:center;
-
-  justify-content:center;
-}
-
-.final-node{
-  min-width:175px;
-
-  padding:22px 15px;
-
-  border-radius:16px;
-
-  border:2px solid var(--line);
-
-  background:#fff;
-
-  font-size:.95rem;
-
-  font-weight:900;
-
-  color:var(--navy);
-}
-
-.final-node.last{
-  border-color:var(--blue);
-
-  background:var(--blue-light);
-}
-
-.final-arrow{
-  width:45px;
-  height:2px;
-
-  background:#AFC2CD;
-
-  position:relative;
-}
-
-.final-arrow::after{
-  content:"";
-
-  position:absolute;
-
-  right:0;
-  top:-5px;
-
-  width:10px;
-  height:10px;
-
-  border-right:2px solid #AFC2CD;
-  border-top:2px solid #AFC2CD;
-
-  transform:rotate(45deg);
-}
-
-.final-message{
-  margin-top:45px;
-
-  padding:22px 40px;
-
-  border-radius:18px;
+  padding:27px 35px;
 
   background:var(--navy);
 
-  color:white;
+  border-radius:20px;
 
-  font-size:1.1rem;
+  color:#fff;
 
-  font-weight:800;
+  text-align:center;
+
+  box-shadow:0 18px 40px rgba(23,50,74,.15);
 }
 
+.synthesis-final strong{
+  display:block;
+
+  font-size:1.3rem;
+  letter-spacing:.02em;
+}
+
+.synthesis-final span{
+  display:block;
+
+  margin-top:9px;
+
+  color:rgba(255,255,255,.72);
+
+  font-size:.57rem;
+  line-height:1.5;
+}
 
 /* =========================================================
-   CLOSING
-========================================================= */
+   19. CLOSING
+   ========================================================= */
 
-.closing{
+.closing-page{
   display:grid;
-
-  grid-template-columns:1fr .9fr;
-
+  grid-template-columns:1fr .85fr;
   gap:5vw;
-
   align-items:center;
 }
 
-.closing h2{
-  font-size:5rem;
+.closing-quote{
+  margin-top:30px;
+
+  padding:20px 24px;
+
+  border-left:4px solid var(--orange);
+
+  background:var(--orange-light);
+
+  color:var(--navy);
+
+  font-size:.82rem;
+  line-height:1.75;
+
+  max-width:700px;
 }
 
-.closing-line{
-  width:70px;
-  height:5px;
-
-  background:var(--orange);
-
-  margin-top:30px;
+.closing-page .subtitle{
+  margin-top:20px;
 }
 
 .closing-photo{
-  height:58vh;
+  height:55vh;
 }
 
-
 /* =========================================================
-   FRAGMENT ANIMATION
-========================================================= */
+   20. FRAGMENT ANIMATION
+   ========================================================= */
 
 .reveal .fragment.fade-up{
   opacity:0;
-
-  transform:translateY(25px);
+  transform:translateY(22px);
 
   transition:
     opacity .65s ease,
@@ -1395,145 +2015,210 @@ h3{
 
 .reveal .fragment.fade-up.visible{
   opacity:1;
-
   transform:translateY(0);
 }
 
-.reveal .fragment.scale-in{
+.reveal .fragment.line-grow{
   opacity:0;
+  transform:scaleX(0);
 
-  transform:scale(.85);
+  transform-origin:left center;
 
   transition:
-    opacity .65s ease,
-    transform .65s ease;
+    opacity .5s ease,
+    transform .75s ease;
 }
 
-.reveal .fragment.scale-in.visible{
+.reveal .fragment.line-grow.visible{
   opacity:1;
-
-  transform:scale(1);
+  transform:scaleX(1);
 }
-
 
 /* =========================================================
-   RESPONSIVE
-========================================================= */
+   21. RESPONSIVE
+   ========================================================= */
 
-@media(max-width:1000px){
+@media(max-width:1100px){
 
-  .title,
-  .setting,
-  .act,
-  .balance,
-  .individual,
-  .closing{
+  .title-page,
+  .setting-page,
+  .act-page,
+  .bridge-page,
+  .convergence-page,
+  .character-page,
+  .reframe-page,
+  .closing-page{
     grid-template-columns:1fr;
   }
 
   .title-photo,
   .setting-photo,
   .act-photo,
+  .convergence-photo,
   .closing-photo{
     height:35vh;
   }
 
-  .conflict-visual{
-    width:100%;
+  .people-grid{
+    gap:14px;
   }
 
-  .description-grid{
+  .person-card{
+    min-height:300px;
+  }
+
+  .conflict-stage{
     grid-template-columns:1fr;
   }
 
-  .flow-node{
-    width:190px;
+  .conflict-center{
+    height:100px;
   }
 
-  .people-flow{
-    grid-template-columns:1fr;
-  }
-
-  .theory-flow,
-  .final-flow,
-  .convergence-line{
-    flex-wrap:wrap;
-  }
-
-  .flow-arrow-right,
-  .theory-arrow,
-  .final-arrow,
-  .conv-arrow{
+  .conflict-center::before,
+  .conflict-center::after{
     display:none;
   }
+
+  .main-flow .flow-row{
+    grid-template-columns:1fr;
+    gap:12px;
+  }
+
+  .flow-connector{
+    width:2px;
+    height:35px;
+    margin:auto;
+  }
+
+  .flow-connector::after{
+    right:-3px;
+    top:auto;
+    bottom:0;
+    transform:rotate(135deg);
+  }
+
+  .flow-down{
+    display:none;
+  }
+
+  .synthesis-flow{
+    grid-template-columns:1fr;
+    gap:10px;
+  }
+
+  .synthesis-arrow{
+    width:2px;
+    height:25px;
+    margin:auto;
+  }
+
+  .synthesis-arrow::after{
+    right:auto;
+    left:-3px;
+    top:auto;
+    bottom:0;
+    transform:rotate(135deg);
+  }
+
+  .theory-grid{
+    grid-template-columns:1fr;
+  }
+
+  .character-bar{
+    right:4vw;
+  }
+}
+
+/* =========================================================
+   22. PRINT / STAGE SAFETY
+   ========================================================= */
+
+@media print{
+
+  .slide{
+    box-shadow:none;
+  }
+
 }
 
 </style>
 </head>
 
-
 <body>
 
 <div class="reveal">
-
 <div class="slides">
 
 
-<!-- =====================================================
-     01 TITLE
-===================================================== -->
+<!-- =========================================================
+     01 — TITLE
+     ========================================================= -->
 
 <section>
 
-<div class="slide title">
+<div class="slide title-page">
 
   <div>
 
-    <div class="title-line fragment fade-up"></div>
+    <div class="title-mark fragment fade-up"></div>
 
     <div class="eyebrow fragment fade-up">
-      CROSS-CULTURAL COMMUNICATION
+      Cross-Cultural Communication Case
     </div>
 
     <h1 class="fragment fade-up">
-
       Different Cultural Care
-
-      <br>
-
-      <span class="blue">
+      <span class="accent">
         for a Shared Family Hope
       </span>
-
     </h1>
 
-    <div class="title-sub fragment fade-up">
-      A medical-family case about cultural difference,
-      communication and mutual understanding.
-    </div>
+    <p class="subtitle fragment fade-up">
+      A cross-cultural case about truth, protection,
+      family care, and mutual understanding.
+    </p>
 
-  </div>
+    <div class="title-meta fragment fade-up">
 
+      <div class="meta-pill">
+        Cross-Cultural Case
+      </div>
 
-  <div class="photo title-photo fragment scale-in">
+      <div class="meta-pill">
+        Medical Context
+      </div>
 
-    <div class="photo-content">
-
-      <div class="photo-icon"></div>
-
-      <div class="photo-text">
-        REAL PHOTO<br>
-        Hospital / family / medical consultation
+      <div class="meta-pill">
+        Three Acts
       </div>
 
     </div>
 
   </div>
 
+  <div class="photo-placeholder title-photo fragment fade-up">
 
-  <div class="bottom">
-    <span>CROSS-CULTURAL CASE</span>
-    <span>01</span>
+    <div class="photo-inner">
+
+      <div class="photo-icon"></div>
+
+      <p>
+        INSERT REAL PHOTO<br>
+        Medical / family-care atmosphere
+      </p>
+
+    </div>
+
+  </div>
+
+  <div class="bottom-bar">
+    <div class="bar-left">
+      <span class="bar-dot"></span>
+      <span>Different Cultural Care</span>
+    </div>
+
+    <span class="page-no">01</span>
   </div>
 
 </div>
@@ -1541,51 +2226,195 @@ h3{
 </section>
 
 
-
-<!-- =====================================================
-     02 CASE SETTING
-===================================================== -->
+<!-- =========================================================
+     02 — PEOPLE
+     ========================================================= -->
 
 <section>
 
-<div class="slide setting">
+<div class="slide people-page">
+
+  <div class="people-header">
+
+    <div class="eyebrow fragment fade-up">
+      Characters
+    </div>
+
+    <h2 class="fragment fade-up">
+      Three Perspectives.
+      <span class="accent">
+        One Shared Concern.
+      </span>
+    </h2>
+
+    <p class="fragment fade-up">
+      The same situation is interpreted through
+      different cultural values, personal experiences,
+      and understandings of care.
+    </p>
+
+  </div>
+
+
+  <div class="people-grid">
+
+    <!-- DANIEL -->
+
+    <div class="person-card fragment fade-up">
+
+      <div class="avatar">
+        <span>D</span>
+      </div>
+
+      <h3>
+        DANIEL
+      </h3>
+
+      <div class="role">
+        Truth · Autonomy
+      </div>
+
+      <p>
+        Represents a perspective that places
+        honesty, autonomy, and the patient's
+        right to know at the centre of care.
+      </p>
+
+    </div>
+
+
+    <!-- XIAORU -->
+
+    <div class="person-card orange-card fragment fade-up">
+
+      <div class="avatar">
+        <span>X</span>
+      </div>
+
+      <h3>
+        XIAORU
+      </h3>
+
+      <div class="role" style="color:var(--orange);">
+        Protection · Family
+      </div>
+
+      <p>
+        Represents a perspective that understands
+        care through family responsibility,
+        emotional protection, and hope.
+      </p>
+
+    </div>
+
+
+    <!-- JIALU -->
+
+    <div class="person-card green-card fragment fade-up">
+
+      <div class="avatar">
+        <span>J</span>
+      </div>
+
+      <h3>
+        JIALU
+      </h3>
+
+      <div class="role" style="color:var(--green);">
+        Mediation · Perspective Taking
+      </div>
+
+      <p>
+        Helps both sides recognise the values
+        behind their choices and move toward
+        mutual adjustment.
+      </p>
+
+    </div>
+
+  </div>
+
+
+  <div class="bottom-bar">
+    <div class="bar-left">
+      <span class="bar-dot"></span>
+      <span>Character Introduction</span>
+    </div>
+
+    <span class="page-no">02</span>
+  </div>
+
+</div>
+
+</section>
+
+
+<!-- =========================================================
+     03 — CASE SETTING
+     ========================================================= -->
+
+<section>
+
+<div class="slide setting-page">
 
   <div>
 
     <div class="eyebrow fragment fade-up">
-      CASE SETTING
+      Case Setting
     </div>
 
     <h2 class="fragment fade-up">
-
       One family.
-
       <br>
-
-      <span class="blue">
-        Different ideas of care.
+      <span class="accent">
+        Different cultural logics.
       </span>
-
     </h2>
 
-    <div class="big-keyword fragment fade-up">
+    <p class="subtitle fragment fade-up">
+      A serious medical situation brings together
+      different understandings of truth, family,
+      protection, and individual choice.
+    </p>
 
-      TRUTH × PROTECTION
+    <div class="setting-cards">
 
-    </div>
+      <div class="setting-card fragment fade-up">
 
-  </div>
+        <strong>
+          CONTEXT
+        </strong>
+
+        <span>
+          Family and medical decision-making
+        </span>
+
+      </div>
 
 
-  <div class="photo setting-photo fragment scale-in">
+      <div class="setting-card fragment fade-up">
 
-    <div class="photo-content">
+        <strong>
+          CENTRAL TENSION
+        </strong>
 
-      <div class="photo-icon"></div>
+        <span>
+          Truth, autonomy, protection and hope
+        </span>
 
-      <div class="photo-text">
-        REAL PHOTO<br>
-        Medical consultation / family scene
+      </div>
+
+
+      <div class="setting-card fragment fade-up">
+
+        <strong>
+          SHARED CONCERN
+        </strong>
+
+        <span>
+          How to care for a loved one
+        </span>
+
       </div>
 
     </div>
@@ -1593,9 +2422,29 @@ h3{
   </div>
 
 
-  <div class="bottom">
-    <span>CASE SETTING</span>
-    <span>02</span>
+  <div class="photo-placeholder setting-photo fragment fade-up">
+
+    <div class="photo-inner">
+
+      <div class="photo-icon"></div>
+
+      <p>
+        INSERT REAL PHOTO<br>
+        Hospital / family / consultation
+      </p>
+
+    </div>
+
+  </div>
+
+
+  <div class="bottom-bar">
+    <div class="bar-left">
+      <span class="bar-dot"></span>
+      <span>Case Setting</span>
+    </div>
+
+    <span class="page-no">03</span>
   </div>
 
 </div>
@@ -1603,14 +2452,44 @@ h3{
 </section>
 
 
-
-<!-- =====================================================
-     03 ACT 1
-===================================================== -->
+<!-- =========================================================
+     04 — ACT ONE OPENER
+     ========================================================= -->
 
 <section>
 
-<div class="slide act">
+<div class="slide act-page">
+
+  <div class="scene-tag">
+    ACT ONE
+  </div>
+
+
+  <div class="character-bar">
+
+    <div class="mini-person active">
+      <div class="mini-avatar">
+        D
+      </div>
+      <span>DANIEL</span>
+    </div>
+
+    <div class="mini-person">
+      <div class="mini-avatar">
+        X
+      </div>
+      <span>XIAORU</span>
+    </div>
+
+    <div class="mini-person">
+      <div class="mini-avatar">
+        J
+      </div>
+      <span>JIALU</span>
+    </div>
+
+  </div>
+
 
   <div class="act-content">
 
@@ -1619,49 +2498,61 @@ h3{
     </div>
 
     <div class="eyebrow fragment fade-up">
-      ACT ONE
+      Act One
     </div>
 
-    <h2 class="fragment fade-up">
+    <h2 class="act-title fragment fade-up">
 
       Cultural Clash
 
       <br>
 
-      <span class="blue">
+      <span class="accent">
         Over a Terminal Diagnosis
       </span>
 
     </h2>
 
+    <p class="subtitle fragment fade-up">
+
+      The first conflict emerges from
+      different ideas about truth,
+      respect and protection.
+
+    </p>
+
     <div class="act-question fragment fade-up">
 
-      TRUTH ≠ PROTECTION
+      What does “care” mean?
 
     </div>
 
   </div>
 
 
-  <div class="photo act-photo fragment scale-in">
+  <div class="photo-placeholder act-photo fragment fade-up">
 
-    <div class="photo-content">
+    <div class="photo-inner">
 
       <div class="photo-icon"></div>
 
-      <div class="photo-text">
-        REAL PHOTO<br>
-        Hospital consultation / diagnosis scene
-      </div>
+      <p>
+        INSERT REAL PHOTO<br>
+        Medical consultation / hospital
+      </p>
 
     </div>
 
   </div>
 
 
-  <div class="bottom">
-    <span>ACT 01 · CULTURAL CLASH</span>
-    <span>03</span>
+  <div class="bottom-bar">
+    <div class="bar-left">
+      <span class="bar-dot"></span>
+      <span>Act 01 · Cultural Clash</span>
+    </div>
+
+    <span class="page-no">04</span>
   </div>
 
 </div>
@@ -1669,60 +2560,153 @@ h3{
 </section>
 
 
-
-<!-- =====================================================
-     04 CORE CONFLICT
-===================================================== -->
+<!-- =========================================================
+     05 — CONFLICT
+     ========================================================= -->
 
 <section>
 
-<div class="slide conflict">
+<div class="slide conflict-page">
 
-  <div class="eyebrow fragment fade-up">
-    ACT ONE · CORE CONFLICT
+  <div class="character-bar">
+
+    <div class="mini-person active">
+      <div class="mini-avatar">D</div>
+      <span>DANIEL</span>
+    </div>
+
+    <div class="mini-person active">
+      <div class="mini-avatar">X</div>
+      <span>XIAORU</span>
+    </div>
+
+    <div class="mini-person">
+      <div class="mini-avatar">J</div>
+      <span>JIALU</span>
+    </div>
+
   </div>
 
-  <h2 class="fragment fade-up">
 
-    What does <span class="blue">care</span> mean?
+  <div class="conflict-header">
 
-  </h2>
+    <div class="eyebrow fragment fade-up">
+      Act One · Core Conflict
+    </div>
 
-  <div class="conflict-sub fragment fade-up">
+    <h2 class="fragment fade-up">
+      Different ways of showing
+      <span class="accent">
+        care
+      </span>
+    </h2>
 
-    Same concern · Different cultural logic
+    <p class="fragment fade-up">
+      Same concern · Different cultural logic
+    </p>
 
   </div>
 
 
-  <div class="conflict-visual">
+  <div class="conflict-stage">
 
-    <div class="conflict-box truth fragment scale-in">
 
-      <div class="main">
+    <!-- TRUTH -->
+
+    <div class="conflict-card truth-card fragment fade-up">
+
+      <div class="card-kicker">
+        DANIEL'S PERSPECTIVE
+      </div>
+
+      <h3>
         TRUTH
+      </h3>
+
+      <div class="core-word">
+        Honesty as respect
       </div>
 
-      <div class="sub">
-        AUTONOMY · RESPECT
+      <div class="conflict-list">
+
+        <div>
+          <i></i>
+          Patient autonomy
+        </div>
+
+        <div>
+          <i></i>
+          Right to know
+        </div>
+
+        <div>
+          <i></i>
+          Honest communication
+        </div>
+
+        <div>
+          <i></i>
+          Personal decision-making
+        </div>
+
       </div>
 
     </div>
 
 
-    <div class="conflict-vs fragment scale-in">
-      CLASH
+    <!-- CENTER -->
+
+    <div class="conflict-center fragment fade-up">
+
+      <div class="vs-circle">
+        TENSION
+      </div>
+
+      <span>
+        Different meanings
+      </span>
+
     </div>
 
 
-    <div class="conflict-box protection fragment scale-in">
+    <!-- PROTECTION -->
 
-      <div class="main">
+    <div class="conflict-card protection-card fragment fade-up">
+
+      <div class="card-kicker">
+        XIAORU'S PERSPECTIVE
+      </div>
+
+      <h3>
         PROTECTION
+      </h3>
+
+      <div class="core-word">
+        Care as protection
       </div>
 
-      <div class="sub">
-        FAMILY · HOPE
+      <div class="conflict-list">
+
+        <div>
+          <i></i>
+          Family bonds
+        </div>
+
+        <div>
+          <i></i>
+          Emotional protection
+        </div>
+
+        <div>
+          <i></i>
+          Preserving hope
+        </div>
+
+        <div>
+          <i></i>
+          Sharing the burden
+        </div>
+
       </div>
 
     </div>
@@ -1730,16 +2714,25 @@ h3{
   </div>
 
 
-  <div class="shared fragment fade-up">
+  <div class="shared-goal fragment fade-up">
 
-    ONE SHARED CONCERN · CARING FOR MOM
+    DIFFERENT PATHS
+    →
+    ONE SHARED CONCERN:
+    CARING FOR A LOVED ONE
 
   </div>
 
 
-  <div class="bottom">
-    <span>CORE CONFLICT</span>
-    <span>04</span>
+  <div class="bottom-bar">
+
+    <div class="bar-left">
+      <span class="bar-dot"></span>
+      <span>Conflict Visualisation</span>
+    </div>
+
+    <span class="page-no">05</span>
+
   </div>
 
 </div>
@@ -1747,19 +2740,43 @@ h3{
 </section>
 
 
-
-<!-- =====================================================
-     05 ACT 2
-===================================================== -->
+<!-- =========================================================
+     06 — ACT TWO
+     ========================================================= -->
 
 <section>
 
-<div class="slide balance">
+<div class="slide bridge-page">
+
+  <div class="scene-tag">
+    ACT TWO
+  </div>
+
+
+  <div class="character-bar">
+
+    <div class="mini-person active">
+      <div class="mini-avatar">D</div>
+      <span>DANIEL</span>
+    </div>
+
+    <div class="mini-person active">
+      <div class="mini-avatar">X</div>
+      <span>XIAORU</span>
+    </div>
+
+    <div class="mini-person active">
+      <div class="mini-avatar">J</div>
+      <span>JIALU</span>
+    </div>
+
+  </div>
+
 
   <div>
 
     <div class="eyebrow fragment fade-up">
-      ACT TWO
+      Act Two
     </div>
 
     <h2 class="fragment fade-up">
@@ -1768,61 +2785,248 @@ h3{
 
       <br>
 
-      <span class="blue">
+      <span class="accent">
         Between Truth and Hope
       </span>
 
     </h2>
 
-    <div class="balance-question fragment fade-up">
+    <p class="subtitle fragment fade-up">
 
-      UNDERSTANDING BEFORE JUDGMENT
+      The conflict changes when both perspectives
+      are examined instead of simply defended.
+
+    </p>
+
+    <div class="act-question fragment fade-up">
+
+      Understanding begins when we make space
+      for another perspective.
 
     </div>
 
   </div>
 
 
-  <div class="balance-diagram">
+  <div class="bridge-visual">
 
-    <div class="balance-node truth fragment fade-up">
-      TRUTH
+    <div class="bridge-node top fragment fade-up">
+
+      <strong>
+        TRUTH
+      </strong>
+
+      <span>
+        Autonomy · Honesty · Respect
+      </span>
+
     </div>
 
-    <div class="balance-node protection fragment fade-up">
-      PROTECTION
+
+    <div class="bridge-node bottom fragment fade-up">
+
+      <strong>
+        PROTECTION
+      </strong>
+
+      <span>
+        Family · Hope · Care
+      </span>
+
     </div>
 
-    <div class="circle fragment scale-in">
 
-      <div class="circle-inner">
+    <div class="bridge-line one fragment line-grow"></div>
 
-        <strong>
-          PERSPECTIVE
-          <br>
-          TAKING
-        </strong>
+    <div class="bridge-line two fragment line-grow"></div>
 
-        <span>
-          See the values<br>
-          behind the choice.
-        </span>
+
+    <div class="bridge-node center fragment fade-up">
+
+      <strong>
+        PERSPECTIVE TAKING
+      </strong>
+
+      <span>
+        Understanding the values behind
+        another person's choice
+      </span>
+
+    </div>
+
+  </div>
+
+
+  <div class="bottom-bar">
+
+    <div class="bar-left">
+      <span class="bar-dot"></span>
+      <span>Act 02 · Seeking Balance</span>
+    </div>
+
+    <span class="page-no">06</span>
+
+  </div>
+
+</div>
+
+</section>
+
+
+<!-- =========================================================
+     07 — ACT THREE
+     ========================================================= -->
+
+<section>
+
+<div class="slide convergence-page">
+
+  <div class="scene-tag">
+    ACT THREE
+  </div>
+
+
+  <div class="character-bar">
+
+    <div class="mini-person">
+      <div class="mini-avatar">D</div>
+      <span>DANIEL</span>
+    </div>
+
+    <div class="mini-person">
+      <div class="mini-avatar">X</div>
+      <span>XIAORU</span>
+    </div>
+
+    <div class="mini-person active">
+      <div class="mini-avatar">J</div>
+      <span>JIALU</span>
+    </div>
+
+  </div>
+
+
+  <div>
+
+    <div class="eyebrow fragment fade-up">
+      Act Three
+    </div>
+
+    <h2 class="fragment fade-up">
+
+      Cultural
+
+      <br>
+
+      <span class="accent">
+        Convergence
+      </span>
+
+    </h2>
+
+    <p class="subtitle fragment fade-up">
+
+      The characters do not erase their cultural
+      differences. They learn to hold different
+      values within a shared form of care.
+
+    </p>
+
+
+    <div class="convergence-steps">
+
+      <div class="convergence-step fragment fade-up">
+
+        <div class="step-number">
+          01
+        </div>
+
+        <div>
+
+          <strong>
+            Understand the difference
+          </strong>
+
+          <span>
+            Recognise the logic behind another perspective.
+          </span>
+
+        </div>
+
+      </div>
+
+
+      <div class="convergence-step fragment fade-up">
+
+        <div class="step-number">
+          02
+        </div>
+
+        <div>
+
+          <strong>
+            Adjust communication
+          </strong>
+
+          <span>
+            Move from confrontation toward dialogue.
+          </span>
+
+        </div>
+
+      </div>
+
+
+      <div class="convergence-step fragment fade-up">
+
+        <div class="step-number">
+          03
+        </div>
+
+        <div>
+
+          <strong>
+            Find shared care
+          </strong>
+
+          <span>
+            Keep the common goal while respecting difference.
+          </span>
+
+        </div>
 
       </div>
 
     </div>
 
+  </div>
 
-    <div class="balance-node shared fragment fade-up">
-      SHARED CARE
+
+  <div class="photo-placeholder convergence-photo fragment fade-up">
+
+    <div class="photo-inner">
+
+      <div class="photo-icon"></div>
+
+      <p>
+        INSERT REAL PHOTO<br>
+        Family / shared meaningful moment
+      </p>
+
     </div>
 
   </div>
 
 
-  <div class="bottom">
-    <span>ACT 02 · SEEKING BALANCE</span>
-    <span>05</span>
+  <div class="bottom-bar">
+
+    <div class="bar-left">
+      <span class="bar-dot"></span>
+      <span>Act 03 · Cultural Convergence</span>
+    </div>
+
+    <span class="page-no">07</span>
+
   </div>
 
 </div>
@@ -1830,82 +3034,18 @@ h3{
 </section>
 
 
-
-<!-- =====================================================
-     06 ACT 3
-===================================================== -->
-
-<section>
-
-<div class="slide convergence">
-
-  <div class="eyebrow fragment fade-up">
-    ACT THREE
-  </div>
-
-  <h2 class="fragment fade-up">
-
-    Cultural <span class="blue">Convergence</span>
-
-  </h2>
-
-  <div class="convergence-sub fragment fade-up">
-
-    Different values can coexist within shared care.
-
-  </div>
-
-
-  <div class="convergence-line">
-
-    <div class="conv-node fragment fade-up">
-      DIFFERENCE
-    </div>
-
-    <div class="conv-arrow fragment fade-up"></div>
-
-    <div class="conv-node fragment fade-up">
-      UNDERSTANDING
-    </div>
-
-    <div class="conv-arrow fragment fade-up"></div>
-
-    <div class="conv-node fragment fade-up">
-      ADJUSTMENT
-    </div>
-
-    <div class="conv-arrow fragment fade-up"></div>
-
-    <div class="conv-node final fragment scale-in">
-      SHARED CARE
-    </div>
-
-  </div>
-
-
-  <div class="bottom">
-    <span>ACT 03 · CULTURAL CONVERGENCE</span>
-    <span>06</span>
-  </div>
-
-</div>
-
-</section>
-
-
-
-<!-- =====================================================
-     07 ANALYSIS COVER
-===================================================== -->
+<!-- =========================================================
+     08 — ANALYSIS COVER
+     ========================================================= -->
 
 <section>
 
 <div class="slide analysis-cover">
 
-  <div>
+  <div class="analysis-inner">
 
-    <div class="eyebrow fragment fade-up">
-      CASE ANALYSIS
+    <div class="analysis-kicker fragment fade-up">
+      Case Analysis
     </div>
 
     <h2 class="fragment fade-up">
@@ -1914,28 +3054,32 @@ h3{
 
       <br>
 
-      <span class="blue">
+      <span class="accent">
         to Cultural Convergence
       </span>
 
     </h2>
 
-    <div class="line fragment scale-in"></div>
-
     <p class="fragment fade-up">
 
-      What happened?
-      Why did it happen?
-      How was the conflict transformed?
+      The story reveals how cultural values shape
+      communication choices — and how perspective
+      taking can transform conflict.
 
     </p>
 
   </div>
 
 
-  <div class="bottom">
-    <span>CASE ANALYSIS</span>
-    <span>07</span>
+  <div class="bottom-bar">
+
+    <div class="bar-left">
+      <span class="bar-dot"></span>
+      <span>Case Analysis</span>
+    </div>
+
+    <span class="page-no">08</span>
+
   </div>
 
 </div>
@@ -1943,70 +3087,134 @@ h3{
 </section>
 
 
-
-<!-- =====================================================
-     08 CASE DESCRIPTION
-===================================================== -->
+<!-- =========================================================
+     09 — CASE DESCRIPTION
+     ========================================================= -->
 
 <section>
 
-<div class="slide description">
+<div class="slide description-page">
 
-  <div class="eyebrow fragment fade-up">
-    CASE DESCRIPTION
+  <div>
+
+    <div class="eyebrow fragment fade-up">
+      Case Analysis · 01
+    </div>
+
+    <h2 class="fragment fade-up">
+
+      What is actually
+      <br>
+      happening?
+
+    </h2>
+
+    <p class="subtitle fragment fade-up">
+
+      The visible disagreement is about whether
+      information should be disclosed.
+      The deeper issue is how each person defines care.
+
+    </p>
+
+
+    <div class="description-points">
+
+      <div class="description-point fragment fade-up">
+
+        <div class="number">
+          01
+        </div>
+
+        <div>
+
+          <strong>
+            Different cultural values
+          </strong>
+
+          <span>
+            Autonomy and family protection
+            are given different weight.
+          </span>
+
+        </div>
+
+      </div>
+
+
+      <div class="description-point fragment fade-up">
+
+        <div class="number">
+          02
+        </div>
+
+        <div>
+
+          <strong>
+            Different definitions of care
+          </strong>
+
+          <span>
+            Truth and protection are understood
+            as different forms of respect.
+          </span>
+
+        </div>
+
+      </div>
+
+
+      <div class="description-point fragment fade-up">
+
+        <div class="number">
+          03
+        </div>
+
+        <div>
+
+          <strong>
+            Communication conflict
+          </strong>
+
+          <span>
+            Different intentions become
+            different interpretations.
+          </span>
+
+        </div>
+
+      </div>
+
+    </div>
+
   </div>
 
-  <h2 class="fragment fade-up">
-    The Core of the Case
-  </h2>
 
+  <div class="photo-placeholder description-photo fragment fade-up">
 
-  <div class="description-grid">
+    <div class="photo-inner">
 
-    <div class="description-card fragment fade-up">
+      <div class="photo-icon"></div>
 
-      <strong>
-        CONTEXT
-      </strong>
-
-      <span>
-        Family medical decision
-      </span>
-
-    </div>
-
-
-    <div class="description-card fragment fade-up">
-
-      <strong>
-        CONFLICT
-      </strong>
-
-      <span>
-        Truth vs Protection
-      </span>
-
-    </div>
-
-
-    <div class="description-card fragment fade-up">
-
-      <strong>
-        SHARED GOAL
-      </strong>
-
-      <span>
-        Caring for Mom
-      </span>
+      <p>
+        INSERT CASE PHOTO<br>
+        Medical / family decision scene
+      </p>
 
     </div>
 
   </div>
 
 
-  <div class="bottom">
-    <span>CASE DESCRIPTION</span>
-    <span>08</span>
+  <div class="bottom-bar">
+
+    <div class="bar-left">
+      <span class="bar-dot"></span>
+      <span>Case Description</span>
+    </div>
+
+    <span class="page-no">09</span>
+
   </div>
 
 </div>
@@ -2014,84 +3222,322 @@ h3{
 </section>
 
 
-
-<!-- =====================================================
-     09 MAIN FLOW
-===================================================== -->
+<!-- =========================================================
+     10 — MAIN FLOWCHART
+     ========================================================= -->
 
 <section>
 
-<div class="slide flow">
+<div class="slide flow-page">
 
-  <div class="eyebrow fragment fade-up">
-    CASE ANALYSIS · CORE LOGIC
+  <div class="flow-header">
+
+    <div class="eyebrow fragment fade-up">
+      Case Analysis · 02
+    </div>
+
+    <h2 class="fragment fade-up">
+      Where does the conflict come from?
+    </h2>
+
+    <p class="fragment fade-up">
+
+      The conflict is not created by different goals,
+      but by different cultural interpretations of care.
+
+    </p>
+
   </div>
 
-  <h2 class="fragment fade-up">
-    How did the conflict form?
-  </h2>
 
-  <div class="flow-sub fragment fade-up">
-    Follow the communication process step by step.
-  </div>
+  <div class="main-flow">
 
-
-  <div class="flowchart">
+    <!-- ROW 1 -->
 
     <div class="flow-row">
 
-      <div class="flow-node blue fragment scale-in">
+      <div class="flow-box primary fragment fade-up">
+
+        <div class="flow-number">
+          01
+        </div>
 
         <strong>
           CULTURAL VALUES
         </strong>
 
         <span>
-          Different ideas of respect and care
+          Different ideas about respect,
+          family and individual choice.
         </span>
 
       </div>
 
-    </div>
+
+      <div class="flow-connector fragment line-grow"></div>
 
 
-    <div class="flow-arrow-down fragment fade-up"></div>
+      <div class="flow-box secondary fragment fade-up">
 
-
-    <div class="flow-row">
-
-      <div class="flow-node fragment scale-in">
+        <div class="flow-number">
+          02
+        </div>
 
         <strong>
-          DIFFERENT
-          <br>
           DEFINITIONS OF CARE
         </strong>
 
         <span>
-          Truth · Protection
+          Truth and protection become
+          different forms of caring.
         </span>
 
       </div>
 
-    </div>
+
+      <div class="flow-connector fragment line-grow"></div>
 
 
-    <div class="flow-arrow-down fragment fade-up"></div>
+      <div class="flow-box critical fragment fade-up">
 
-
-    <div class="flow-row">
-
-      <div class="flow-node orange fragment scale-in">
+        <div class="flow-number">
+          03
+        </div>
 
         <strong>
-          COMMUNICATION
-          <br>
-          CONFLICT
+          COMMUNICATION CHOICES
         </strong>
 
         <span>
-          Different intentions are interpreted differently
+          Each side chooses a different
+          way to protect the loved one.
+        </span>
+
+      </div>
+
+    </div>
+
+
+    <div class="flow-down fragment line-grow"></div>
+
+
+    <!-- ROW 2 -->
+
+    <div class="flow-row">
+
+      <div class="flow-box critical fragment fade-up">
+
+        <div class="flow-number">
+          04
+        </div>
+
+        <strong>
+          MISUNDERSTANDING
+        </strong>
+
+        <span>
+          Different intentions are interpreted
+          through different expectations.
+        </span>
+
+      </div>
+
+
+      <div class="flow-connector fragment line-grow"></div>
+
+
+      <div class="flow-box primary fragment fade-up">
+
+        <div class="flow-number">
+          05
+        </div>
+
+        <strong>
+          PERSPECTIVE TAKING
+        </strong>
+
+        <span>
+          Each person begins to understand
+          the values behind the other's choice.
+        </span>
+
+      </div>
+
+
+      <div class="flow-connector fragment line-grow"></div>
+
+
+      <div class="flow-box secondary fragment fade-up">
+
+        <div class="flow-number">
+          06
+        </div>
+
+        <strong>
+          MUTUAL ADJUSTMENT
+        </strong>
+
+        <span>
+          Communication changes without
+          erasing cultural difference.
+        </span>
+
+      </div>
+
+    </div>
+
+
+    <div class="flow-final fragment fade-up">
+
+      <strong>
+        CULTURAL CONVERGENCE
+      </strong>
+
+      <span>
+        Different values remain, but the communication
+        moves toward a shared form of care.
+      </span>
+
+    </div>
+
+  </div>
+
+
+  <div class="bottom-bar">
+
+    <div class="bar-left">
+      <span class="bar-dot"></span>
+      <span>Case Analysis · Process Logic</span>
+    </div>
+
+    <span class="page-no">10</span>
+
+  </div>
+
+</div>
+
+</section>
+
+
+<!-- =========================================================
+     11 — DANIEL
+     ========================================================= -->
+
+<section>
+
+<div class="slide character-page">
+
+  <div class="character-left">
+
+    <div class="character-avatar-large fragment fade-up">
+      D
+    </div>
+
+    <div class="small-label fragment fade-up">
+      Individual Case Analysis
+    </div>
+
+    <div class="character-name fragment fade-up">
+      DANIEL
+    </div>
+
+    <div class="character-role fragment fade-up">
+      Truth · Autonomy · Honesty
+    </div>
+
+    <div class="character-summary fragment fade-up">
+
+      Daniel represents a perspective in which
+      honesty and the patient's right to know
+      are understood as essential forms of respect.
+
+    </div>
+
+  </div>
+
+
+  <div class="analysis-card">
+
+    <div class="analysis-core fragment fade-up">
+
+      <strong>
+        TRUTH AS RESPECT
+      </strong>
+
+      <span>
+        His starting point is not a lack of care,
+        but a different cultural understanding
+        of what responsible care requires.
+      </span>
+
+    </div>
+
+
+    <div class="analysis-process">
+
+      <div class="process-item fragment fade-up">
+
+        <div class="process-no">
+          STEP 01
+        </div>
+
+        <strong>
+          Initial View
+        </strong>
+
+        <span>
+          Care requires honest disclosure.
+        </span>
+
+      </div>
+
+
+      <div class="process-item fragment fade-up">
+
+        <div class="process-no">
+          STEP 02
+        </div>
+
+        <strong>
+          Cultural Logic
+        </strong>
+
+        <span>
+          Autonomy is connected with respect.
+        </span>
+
+      </div>
+
+
+      <div class="process-item fragment fade-up">
+
+        <div class="process-no">
+          STEP 03
+        </div>
+
+        <strong>
+          Reflection
+        </strong>
+
+        <span>
+          Protection can also come from care.
+        </span>
+
+      </div>
+
+
+      <div class="process-item fragment fade-up">
+
+        <div class="process-no">
+          STEP 04
+        </div>
+
+        <strong>
+          Adjustment
+        </strong>
+
+        <span>
+          He makes space for another definition of care.
         </span>
 
       </div>
@@ -2101,9 +3547,15 @@ h3{
   </div>
 
 
-  <div class="bottom">
-    <span>CASE ANALYSIS · FORMATION</span>
-    <span>09</span>
+  <div class="bottom-bar">
+
+    <div class="bar-left">
+      <span class="bar-dot"></span>
+      <span>Individual Analysis · Daniel</span>
+    </div>
+
+    <span class="page-no">11</span>
+
   </div>
 
 </div>
@@ -2111,265 +3563,144 @@ h3{
 </section>
 
 
-
-<!-- =====================================================
-     10 THREE PEOPLE
-===================================================== -->
-
-<section>
-
-<div class="slide people">
-
-  <div class="eyebrow fragment fade-up">
-    CASE ANALYSIS · THREE PERSPECTIVES
-  </div>
-
-  <h2 class="fragment fade-up">
-    Three Perspectives
-  </h2>
-
-
-  <div class="people-flow">
-
-    <div class="person fragment scale-in">
-
-      <div class="name">
-        DANIEL
-      </div>
-
-      <div class="role">
-        FOREIGN PERSPECTIVE
-      </div>
-
-      <div class="keyword">
-        TRUTH
-      </div>
-
-    </div>
-
-
-    <div class="person fragment scale-in">
-
-      <div class="name">
-        XIAORU
-      </div>
-
-      <div class="role">
-        CHINESE FAMILY
-      </div>
-
-      <div class="keyword">
-        PROTECTION
-      </div>
-
-    </div>
-
-
-    <div class="person fragment scale-in">
-
-      <div class="name">
-        JIALU
-      </div>
-
-      <div class="role">
-        MEDIATOR
-      </div>
-
-      <div class="keyword">
-        PERSPECTIVE TAKING
-      </div>
-
-    </div>
-
-  </div>
-
-
-  <div class="flow-arrow-down fragment fade-up"
-       style="margin:30px auto 0;">
-  </div>
-
-
-  <div class="shared fragment fade-up"
-       style="margin:20px auto 0;">
-
-    SHARED CONCERN → CARE FOR MOM
-
-  </div>
-
-
-  <div class="bottom">
-    <span>THREE PERSPECTIVES</span>
-    <span>10</span>
-  </div>
-
-</div>
-
-</section>
-
-
-
-<!-- =====================================================
-     11 DANIEL
-===================================================== -->
+<!-- =========================================================
+     12 — XIAORU
+     ========================================================= -->
 
 <section>
 
-<div class="slide individual">
+<div class="slide character-page">
 
-  <div class="individual-left">
+  <div class="character-left">
 
-    <div class="eyebrow fragment fade-up">
-      INDIVIDUAL ANALYSIS
+    <div class="character-avatar-large fragment fade-up">
+      X
     </div>
 
-    <div class="individual-name">
-      DANIEL
+    <div class="small-label fragment fade-up">
+      Individual Case Analysis
     </div>
 
-    <div class="individual-real-name">
-      TRUTH
-    </div>
-
-    <div class="individual-role">
-      AUTONOMY · HONESTY · RESPECT
-    </div>
-
-  </div>
-
-
-  <div class="individual-flow">
-
-    <div class="individual-node fragment scale-in">
-
-      <strong>
-        INITIAL VIEW
-      </strong>
-
-      <span>
-        Truth = respect
-      </span>
-
-    </div>
-
-    <div class="individual-arrow fragment fade-up"></div>
-
-    <div class="individual-node fragment scale-in">
-
-      <strong>
-        REFLECTION
-      </strong>
-
-      <span>
-        Personal context matters
-      </span>
-
-    </div>
-
-    <div class="individual-arrow fragment fade-up"></div>
-
-    <div class="individual-node fragment scale-in">
-
-      <strong>
-        ADJUSTMENT
-      </strong>
-
-      <span>
-        Understand protection
-      </span>
-
-    </div>
-
-  </div>
-
-
-  <div class="bottom">
-    <span>INDIVIDUAL ANALYSIS · DANIEL</span>
-    <span>11</span>
-  </div>
-
-</div>
-
-</section>
-
-
-
-<!-- =====================================================
-     12 XIAORU
-===================================================== -->
-
-<section>
-
-<div class="slide individual">
-
-  <div class="individual-left">
-
-    <div class="eyebrow fragment fade-up">
-      INDIVIDUAL ANALYSIS
-    </div>
-
-    <div class="individual-name">
+    <div class="character-name fragment fade-up">
       XIAORU
     </div>
 
-    <div class="individual-real-name">
-      PROTECTION
+    <div class="character-role fragment fade-up"
+         style="color:var(--orange);">
+      Protection · Family · Hope
     </div>
 
-    <div class="individual-role">
-      FAMILY · HOPE · EMOTIONAL CARE
-    </div>
+    <div class="character-summary fragment fade-up">
 
-  </div>
-
-
-  <div class="individual-flow">
-
-    <div class="individual-node fragment scale-in">
-
-      <strong>
-        INITIAL VIEW
-      </strong>
-
-      <span>
-        Protection = love
-      </span>
-
-    </div>
-
-    <div class="individual-arrow fragment fade-up"></div>
-
-    <div class="individual-node fragment scale-in">
-
-      <strong>
-        REFLECTION
-      </strong>
-
-      <span>
-        Respect still matters
-      </span>
-
-    </div>
-
-    <div class="individual-arrow fragment fade-up"></div>
-
-    <div class="individual-node fragment scale-in">
-
-      <strong>
-        ADJUSTMENT
-      </strong>
-
-      <span>
-        Choose a gentler approach
-      </span>
+      Xiaoru understands care through family
+      responsibility, emotional protection,
+      and preserving hope for the loved one.
 
     </div>
 
   </div>
 
 
-  <div class="bottom">
-    <span>INDIVIDUAL ANALYSIS · XIAORU</span>
-    <span>12</span>
+  <div class="analysis-card">
+
+    <div class="analysis-core orange-core fragment fade-up">
+
+      <strong>
+        PROTECTION AS CARE
+      </strong>
+
+      <span>
+        Her starting point is not deception,
+        but the belief that family should
+        share and protect emotional burdens.
+      </span>
+
+    </div>
+
+
+    <div class="analysis-process">
+
+      <div class="process-item fragment fade-up">
+
+        <div class="process-no">
+          STEP 01
+        </div>
+
+        <strong>
+          Initial View
+        </strong>
+
+        <span>
+          Protection can prevent unnecessary fear.
+        </span>
+
+      </div>
+
+
+      <div class="process-item fragment fade-up">
+
+        <div class="process-no">
+          STEP 02
+        </div>
+
+        <strong>
+          Cultural Logic
+        </strong>
+
+        <span>
+          Family responsibility shapes decisions.
+        </span>
+
+      </div>
+
+
+      <div class="process-item fragment fade-up">
+
+        <div class="process-no">
+          STEP 03
+        </div>
+
+        <strong>
+          Reflection
+        </strong>
+
+        <span>
+          Protection also needs to respect the person.
+        </span>
+
+      </div>
+
+
+      <div class="process-item fragment fade-up">
+
+        <div class="process-no">
+          STEP 04
+        </div>
+
+        <strong>
+          Adjustment
+        </strong>
+
+        <span>
+          She accepts a more reflective approach.
+        </span>
+
+      </div>
+
+    </div>
+
+  </div>
+
+
+  <div class="bottom-bar">
+
+    <div class="bar-left">
+      <span class="bar-dot"></span>
+      <span>Individual Analysis · Xiaoru</span>
+    </div>
+
+    <span class="page-no">12</span>
+
   </div>
 
 </div>
@@ -2377,84 +3708,144 @@ h3{
 </section>
 
 
-
-<!-- =====================================================
-     13 JIALU
-===================================================== -->
+<!-- =========================================================
+     13 — JIALU
+     ========================================================= -->
 
 <section>
 
-<div class="slide individual">
+<div class="slide character-page">
 
-  <div class="individual-left">
+  <div class="character-left">
 
-    <div class="eyebrow fragment fade-up">
-      INDIVIDUAL ANALYSIS
+    <div class="character-avatar-large fragment fade-up">
+      J
     </div>
 
-    <div class="individual-name">
+    <div class="small-label fragment fade-up">
+      Individual Case Analysis
+    </div>
+
+    <div class="character-name fragment fade-up">
       JIALU
     </div>
 
-    <div class="individual-real-name">
-      MEDIATION
+    <div class="character-role fragment fade-up"
+         style="color:var(--green);">
+      Perspective Taking · Reframing · Mediation
     </div>
 
-    <div class="individual-role">
-      PERSPECTIVE TAKING · REFRAMING
-    </div>
+    <div class="character-summary fragment fade-up">
 
-  </div>
-
-
-  <div class="individual-flow">
-
-    <div class="individual-node fragment scale-in">
-
-      <strong>
-        UNDERSTAND
-      </strong>
-
-      <span>
-        See both cultural perspectives
-      </span>
-
-    </div>
-
-    <div class="individual-arrow fragment fade-up"></div>
-
-    <div class="individual-node fragment scale-in">
-
-      <strong>
-        REFRAME
-      </strong>
-
-      <span>
-        Move beyond right vs wrong
-      </span>
-
-    </div>
-
-    <div class="individual-arrow fragment fade-up"></div>
-
-    <div class="individual-node fragment scale-in">
-
-      <strong>
-        CONNECT
-      </strong>
-
-      <span>
-        Find shared care
-      </span>
+      Jialu does not simply choose one side.
+      Her role is to make the cultural logic
+      behind both positions visible.
 
     </div>
 
   </div>
 
 
-  <div class="bottom">
-    <span>INDIVIDUAL ANALYSIS · JIALU</span>
-    <span>13</span>
+  <div class="analysis-card">
+
+    <div class="analysis-core green-core fragment fade-up">
+
+      <strong>
+        PERSPECTIVE TAKING
+      </strong>
+
+      <span>
+        Jialu helps transform the conflict from
+        “who is right?” into “what values are
+        behind each choice?”
+      </span>
+
+    </div>
+
+
+    <div class="analysis-process">
+
+      <div class="process-item fragment fade-up">
+
+        <div class="process-no">
+          STEP 01
+        </div>
+
+        <strong>
+          Identify
+        </strong>
+
+        <span>
+          Recognise Daniel's cultural perspective.
+        </span>
+
+      </div>
+
+
+      <div class="process-item fragment fade-up">
+
+        <div class="process-no">
+          STEP 02
+        </div>
+
+        <strong>
+          Understand
+        </strong>
+
+        <span>
+          Recognise Xiaoru's cultural perspective.
+        </span>
+
+      </div>
+
+
+      <div class="process-item fragment fade-up">
+
+        <div class="process-no">
+          STEP 03
+        </div>
+
+        <strong>
+          Reframe
+        </strong>
+
+        <span>
+          Return the conflict to the shared concern.
+        </span>
+
+      </div>
+
+
+      <div class="process-item fragment fade-up">
+
+        <div class="process-no">
+          STEP 04
+        </div>
+
+        <strong>
+          Mediate
+        </strong>
+
+        <span>
+          Guide both sides toward mutual adjustment.
+        </span>
+
+      </div>
+
+    </div>
+
+  </div>
+
+
+  <div class="bottom-bar">
+
+    <div class="bar-left">
+      <span class="bar-dot"></span>
+      <span>Individual Analysis · Jialu</span>
+    </div>
+
+    <span class="page-no">13</span>
+
   </div>
 
 </div>
@@ -2462,96 +3853,113 @@ h3{
 </section>
 
 
-
-<!-- =====================================================
-     14 THEORY
-===================================================== -->
+<!-- =========================================================
+     14 — THREE PERSPECTIVES
+     ========================================================= -->
 
 <section>
 
-<div class="slide theory">
+<div class="slide">
 
   <div class="eyebrow fragment fade-up">
-    CASE ANALYSIS · THEORY
+    Case Analysis · 03
   </div>
 
   <h2 class="fragment fade-up">
-    Theoretical Logic
+    Three perspectives.
+    <span class="accent">
+      Three functions.
+    </span>
   </h2>
 
-
-  <div class="theory-flow">
-
-    <div class="theory-node fragment scale-in">
-
-      <strong>
-        DIFFERENCE
-      </strong>
-
-      <span>
-        Cultural values shape interpretation.
-      </span>
-
-    </div>
+  <p class="subtitle fragment fade-up">
+    Each character contributes a different part
+    of the cross-cultural communication process.
+  </p>
 
 
-    <div class="theory-arrow fragment fade-up"></div>
+  <div class="people-grid"
+       style="max-width:1180px;margin:45px auto 0;">
 
+    <div class="person-card fragment fade-up">
 
-    <div class="theory-node highlight fragment scale-in">
+      <div class="avatar">
+        D
+      </div>
 
-      <strong>
-        PERSPECTIVE
-        <br>
-        TAKING
-      </strong>
+      <h3>
+        DANIEL
+      </h3>
 
-      <span>
-        Understand the logic behind another choice.
-      </span>
+      <div class="role">
+        VALUE REPRESENTATION
+      </div>
+
+      <p>
+        Makes autonomy, honesty,
+        and individual choice visible.
+      </p>
 
     </div>
 
 
-    <div class="theory-arrow fragment fade-up"></div>
+    <div class="person-card orange-card fragment fade-up">
 
+      <div class="avatar">
+        X
+      </div>
 
-    <div class="theory-node fragment scale-in">
+      <h3>
+        XIAORU
+      </h3>
 
-      <strong>
-        REFRAMING
-      </strong>
+      <div class="role"
+           style="color:var(--orange);">
+        VALUE REPRESENTATION
+      </div>
 
-      <span>
-        Shift from opposition to shared concern.
-      </span>
+      <p>
+        Makes family responsibility,
+        protection, and hope visible.
+      </p>
 
     </div>
 
 
-    <div class="theory-arrow fragment fade-up"></div>
+    <div class="person-card green-card fragment fade-up">
 
+      <div class="avatar">
+        J
+      </div>
 
-    <div class="theory-node highlight fragment scale-in">
+      <h3>
+        JIALU
+      </h3>
 
-      <strong>
-        MUTUAL
-        <br>
-        ADJUSTMENT
-      </strong>
+      <div class="role"
+           style="color:var(--green);">
+        BRIDGE & MEDIATION
+      </div>
 
-      <span>
-        Build a workable form of communication.
-      </span>
+      <p>
+        Makes different cultural logics
+        understandable to both sides.
+      </p>
 
     </div>
 
   </div>
 
 
-  <div class="bottom">
-    <span>THEORETICAL LOGIC</span>
-    <span>14</span>
+  <div class="bottom-bar">
+
+    <div class="bar-left">
+      <span class="bar-dot"></span>
+      <span>Role-Based Case Analysis</span>
+    </div>
+
+    <span class="page-no">14</span>
+
   </div>
 
 </div>
@@ -2559,89 +3967,367 @@ h3{
 </section>
 
 
-
-<!-- =====================================================
-     15 FINAL SYNTHESIS
-===================================================== -->
+<!-- =========================================================
+     15 — THEORY
+     ========================================================= -->
 
 <section>
 
-<div class="slide final">
+<div class="slide theory-page">
 
-  <div class="eyebrow fragment fade-up">
-    FINAL ANALYSIS
+  <div class="theory-header">
+
+    <div class="eyebrow fragment fade-up">
+      Case Analysis · Theory
+    </div>
+
+    <h2 class="fragment fade-up">
+      From difference
+      <span class="accent">
+        to adjustment
+      </span>
+    </h2>
+
+    <p class="fragment fade-up">
+      The theoretical logic explains why the conflict
+      changes rather than simply describing the plot.
+    </p>
+
   </div>
 
-  <h2 class="fragment fade-up">
 
-    From Clash
+  <div class="theory-grid">
 
-    <span class="blue">
-      to Convergence
+
+    <div class="theory-card fragment fade-up">
+
+      <div class="theory-no">
+        THEORY 01
+      </div>
+
+      <h3>
+        Perspective Taking
+      </h3>
+
+      <p>
+        Move beyond one's own cultural assumptions
+        and consider the values and reasoning
+        behind another person's behaviour.
+      </p>
+
+      <div class="theory-link">
+        DIFFERENCE → UNDERSTANDING
+      </div>
+
+    </div>
+
+
+    <div class="theory-card fragment fade-up">
+
+      <div class="theory-no">
+        THEORY 02
+      </div>
+
+      <h3>
+        Reframing
+      </h3>
+
+      <p>
+        Reinterpret the disagreement from
+        “truth versus protection” into a shared
+        concern: how to care for the loved one.
+      </p>
+
+      <div class="theory-link">
+        OPPOSITION → SHARED CONCERN
+      </div>
+
+    </div>
+
+
+    <div class="theory-card fragment fade-up">
+
+      <div class="theory-no">
+        THEORY 03
+      </div>
+
+      <h3>
+        Mutual Adjustment
+      </h3>
+
+      <p>
+        Neither side simply abandons its values.
+        Understanding allows both sides to modify
+        communication and behaviour.
+      </p>
+
+      <div class="theory-link">
+        DIFFERENCE → ADAPTATION
+      </div>
+
+    </div>
+
+  </div>
+
+
+  <div class="bottom-bar">
+
+    <div class="bar-left">
+      <span class="bar-dot"></span>
+      <span>Theoretical Analysis</span>
+    </div>
+
+    <span class="page-no">15</span>
+
+  </div>
+
+</div>
+
+</section>
+
+
+<!-- =========================================================
+     16 — REFRAMING
+     ========================================================= -->
+
+<section>
+
+<div class="slide reframe-page">
+
+  <div class="reframe-diagram">
+
+
+    <div class="reframe-box a fragment fade-up">
+
+      <strong>
+        Daniel's Frame
+      </strong>
+
+      <span>
+        Respect means allowing the patient
+        to know and participate in decisions.
+      </span>
+
+    </div>
+
+
+    <div class="reframe-box b fragment fade-up">
+
+      <strong>
+        Xiaoru's Frame
+      </strong>
+
+      <span>
+        Care means protecting a loved one
+        from unnecessary emotional harm.
+      </span>
+
+    </div>
+
+
+    <div class="reframe-connector one fragment line-grow"></div>
+
+    <div class="reframe-connector two fragment line-grow"></div>
+
+
+    <div class="reframe-box c fragment fade-up">
+
+      <strong>
+        Reframed Perspective
+      </strong>
+
+      <span>
+        Both perspectives are connected
+        by a shared concern for the loved one.
+      </span>
+
+    </div>
+
+  </div>
+
+
+  <div class="reframe-text">
+
+    <div class="eyebrow fragment fade-up">
+      Case Analysis · Reframing
+    </div>
+
+    <h2 class="fragment fade-up">
+
+      From opposition
+
+      <br>
+
+      <span class="accent">
+        to understanding
+      </span>
+
+    </h2>
+
+    <p class="fragment fade-up">
+
+      The solution does not require one culture
+      to defeat the other. Communication changes
+      when the conflict is understood at the level
+      of values and intentions.
+
+    </p>
+
+  </div>
+
+
+  <div class="bottom-bar">
+
+    <div class="bar-left">
+      <span class="bar-dot"></span>
+      <span>Reframing the Cultural Conflict</span>
+    </div>
+
+    <span class="page-no">16</span>
+
+  </div>
+
+</div>
+
+</section>
+
+
+<!-- =========================================================
+     17 — FINAL SYNTHESIS
+     ========================================================= -->
+
+<section>
+
+<div class="slide synthesis-page">
+
+  <div class="synthesis-header">
+
+    <div class="eyebrow fragment fade-up">
+      Final Case Analysis
+    </div>
+
+    <h2 class="fragment fade-up">
+
+      From Cultural Clash
+      <span class="accent">
+        to Cultural Convergence
+      </span>
+
+    </h2>
+
+    <p class="fragment fade-up">
+      A clear path from cultural difference
+      to mutual understanding.
+    </p>
+
+  </div>
+
+
+  <div class="synthesis-flow">
+
+
+    <div class="synthesis-node fragment fade-up">
+      <strong>
+        Different<br>
+        Values
+      </strong>
+    </div>
+
+
+    <div class="synthesis-arrow fragment line-grow"></div>
+
+
+    <div class="synthesis-node fragment fade-up">
+      <strong>
+        Different<br>
+        Definitions
+      </strong>
+    </div>
+
+
+    <div class="synthesis-arrow fragment line-grow"></div>
+
+
+    <div class="synthesis-node fragment fade-up">
+      <strong>
+        Misunderstanding
+      </strong>
+    </div>
+
+
+    <div class="synthesis-arrow fragment line-grow"></div>
+
+
+    <div class="synthesis-node fragment fade-up">
+      <strong>
+        Perspective<br>
+        Taking
+      </strong>
+    </div>
+
+
+    <div class="synthesis-arrow fragment line-grow"></div>
+
+
+    <div class="synthesis-node fragment fade-up">
+      <strong>
+        Reframing
+      </strong>
+    </div>
+
+  </div>
+
+
+  <div class="synthesis-flow"
+       style="margin-top:18px;max-width:700px;">
+
+    <div class="synthesis-node fragment fade-up">
+      <strong>
+        Mutual<br>
+        Adjustment
+      </strong>
+    </div>
+
+
+    <div class="synthesis-arrow fragment line-grow"></div>
+
+
+    <div class="synthesis-node fragment fade-up"
+         style="border-color:#AFC9BB;background:var(--green-light);">
+
+      <strong style="color:var(--green);">
+        Cultural<br>
+        Convergence
+      </strong>
+
+    </div>
+
+  </div>
+
+
+  <div class="synthesis-final fragment fade-up">
+
+    <strong>
+      DIFFERENCE DOES NOT HAVE TO MEAN DIVISION
+    </strong>
+
+    <span>
+      Understanding creates space for different
+      ways of caring within a shared concern.
     </span>
 
-  </h2>
-
-
-  <div class="final-flow">
-
-    <div class="final-node fragment scale-in">
-      DIFFERENT
-      <br>
-      VALUES
-    </div>
-
-    <div class="final-arrow fragment fade-up"></div>
-
-    <div class="final-node fragment scale-in">
-      CULTURAL
-      <br>
-      MISUNDERSTANDING
-    </div>
-
-    <div class="final-arrow fragment fade-up"></div>
-
-    <div class="final-node fragment scale-in">
-      PERSPECTIVE
-      <br>
-      TAKING
-    </div>
-
-    <div class="final-arrow fragment fade-up"></div>
-
-    <div class="final-node fragment scale-in">
-      REFRAMING
-    </div>
-
-    <div class="final-arrow fragment fade-up"></div>
-
-    <div class="final-node fragment scale-in">
-      MUTUAL
-      <br>
-      ADJUSTMENT
-    </div>
-
-    <div class="final-arrow fragment fade-up"></div>
-
-    <div class="final-node last fragment scale-in">
-      CULTURAL
-      <br>
-      CONVERGENCE
-    </div>
-
   </div>
 
 
-  <div class="final-message fragment fade-up">
+  <div class="bottom-bar">
 
-    DIFFERENCES DO NOT HAVE TO DIVIDE US.
+    <div class="bar-left">
+      <span class="bar-dot"></span>
+      <span>Final Synthesis</span>
+    </div>
 
-  </div>
+    <span class="page-no">17</span>
 
-
-  <div class="bottom">
-    <span>FINAL SYNTHESIS</span>
-    <span>15</span>
   </div>
 
 </div>
@@ -2649,19 +4335,18 @@ h3{
 </section>
 
 
-
-<!-- =====================================================
-     16 CLOSING
-===================================================== -->
+<!-- =========================================================
+     18 — CLOSING
+     ========================================================= -->
 
 <section>
 
-<div class="slide closing">
+<div class="slide closing-page">
 
   <div>
 
     <div class="eyebrow fragment fade-up">
-      CLOSING
+      Closing
     </div>
 
     <h2 class="fragment fade-up">
@@ -2670,36 +4355,60 @@ h3{
 
       <br>
 
-      <span class="blue">
+      <span class="accent">
         to care.
       </span>
 
     </h2>
 
-    <div class="closing-line fragment fade-up"></div>
+
+    <div class="closing-quote fragment fade-up">
+
+      Understanding does not ask us
+      to give up what we believe.
+      It asks us to make space
+      for another person's perspective.
+
+    </div>
+
+
+    <p class="subtitle fragment fade-up">
+
+      Shared care does not require
+      identical cultures.
+
+    </p>
 
   </div>
 
 
-  <div class="photo closing-photo fragment scale-in">
+  <div class="photo-placeholder closing-photo fragment fade-up">
 
-    <div class="photo-content">
+    <div class="photo-inner">
 
       <div class="photo-icon"></div>
 
-      <div class="photo-text">
-        FINAL REAL PHOTO<br>
-        Family / sea / shared meaningful moment
-      </div>
+      <p>
+        INSERT FINAL REAL PHOTO<br>
+        Warm family / shared-care image
+      </p>
 
     </div>
 
   </div>
 
 
-  <div class="bottom">
-    <span>DIFFERENT CULTURAL CARE FOR A SHARED FAMILY HOPE</span>
-    <span>16</span>
+  <div class="bottom-bar">
+
+    <div class="bar-left">
+      <span class="bar-dot"></span>
+      <span>
+        Different Cultural Care for a Shared Family Hope
+      </span>
+    </div>
+
+    <span class="page-no">18</span>
+
   </div>
 
 </div>
@@ -2709,7 +4418,6 @@ h3{
 
 </div>
 </div>
-
 
 
 <script src="https://cdn.jsdelivr.net/npm/reveal.js@5/dist/reveal.js"></script>
@@ -2730,6 +4438,10 @@ Reveal.initialize({
 
   touch:true,
 
+  transition:"fade",
+
+  transitionSpeed:"fast",
+
   width:1600,
 
   height:900,
@@ -2740,19 +4452,88 @@ Reveal.initialize({
 
   maxScale:2,
 
-  transition:"fade",
+  slideNumber:"c/t",
 
-  transitionSpeed:"slow",
+  showNotes:false,
+
+  embedded:false,
 
   fragments:true,
-
-  slideNumber:"c/t",
 
   autoSlide:0,
 
   loop:false
 
 });
+
+
+/* =========================================================
+   EXTRA KEYBOARD CONTROL
+   ========================================================= */
+
+document.addEventListener("keydown",function(event){
+
+  if(event.key==="f" || event.key==="F"){
+    if(!document.fullscreenElement){
+      document.documentElement.requestFullscreen?.();
+    }else{
+      document.exitFullscreen?.();
+    }
+  }
+
+});
+
+
+/* =========================================================
+   CHARACTER BAR VISUAL RESPONSE
+   ========================================================= */
+
+function updateCharacterBars(){
+
+  const sections=document.querySelectorAll(
+    ".slides section"
+  );
+
+  sections.forEach(section=>{
+
+    const bars=section.querySelectorAll(
+      ".mini-person"
+    );
+
+    if(!bars.length) return;
+
+    const active=section.dataset.character;
+
+    if(!active) return;
+
+    bars.forEach(item=>{
+
+      item.classList.remove("active");
+
+      const name=item
+        .querySelector("span")
+        ?.textContent
+        ?.trim()
+        ?.toUpperCase();
+
+      if(name===active){
+        item.classList.add("active");
+      }
+
+    });
+
+  });
+
+}
+
+updateCharacterBars();
+
+Reveal.on("slidechanged",function(){
+
+  updateCharacterBars();
+
+});
+
 
 </script>
 
