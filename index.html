@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>跨文化能力大赛</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    html,
+    body {
+      margin: 0;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      font-family: "Microsoft YaHei", "PingFang SC", sans-serif;
+      background: #111;
+    }
+
+    .slide {
+      width: 100vw;
+      height: 100vh;
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      background:
+        radial-gradient(circle at 20% 30%, #d9e7ff 0%, transparent 32%),
+        radial-gradient(circle at 80% 70%, #ffe3c7 0%, transparent 30%),
+        linear-gradient(135deg, #f7f4ed, #e9eef5);
+    }
+
+    .content {
+      position: relative;
+      z-index: 2;
+      text-align: center;
+    }
+
+    .eyebrow {
+      font-size: 18px;
+      letter-spacing: 5px;
+      margin-bottom: 28px;
+      opacity: 0;
+      animation: fadeUp 1s ease forwards;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: clamp(54px, 8vw, 110px);
+      font-weight: 700;
+      letter-spacing: 8px;
+      color: #18212f;
+      opacity: 0;
+      animation: titleIn 1.2s cubic-bezier(.2,.8,.2,1) .3s forwards;
+    }
+
+    .subtitle {
+      margin-top: 30px;
+      font-size: 25px;
+      color: #4b5563;
+      opacity: 0;
+      animation: fadeUp 1s ease .8s forwards;
+    }
+
+    .line {
+      width: 0;
+      height: 3px;
+      margin: 35px auto 0;
+      background: #18212f;
+      animation: lineGrow 1s ease 1.3s forwards;
+    }
+
+    .circle {
+      position: absolute;
+      width: 420px;
+      height: 420px;
+      border-radius: 50%;
+      border: 1px solid rgba(24, 33, 47, .12);
+      animation: rotate 18s linear infinite;
+    }
+
+    .circle::before {
+      content: "";
+      position: absolute;
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background: #18212f;
+      top: 18px;
+      left: 50%;
+      transform: translateX(-50%);
+    }
+
+    .corner {
+      position: absolute;
+      font-size: 14px;
+      letter-spacing: 3px;
+      color: #6b7280;
+      opacity: 0;
+      animation: fadeIn 1s ease 1.5s forwards;
+    }
+
+    .corner.top-left {
+      top: 40px;
+      left: 50px;
+    }
+
+    .corner.bottom-right {
+      bottom: 40px;
+      right: 50px;
+    }
+
+    @keyframes titleIn {
+      0% {
+        opacity: 0;
+        transform: translateY(50px) scale(.94);
+        filter: blur(10px);
+      }
+
+      100% {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+        filter: blur(0);
+      }
+    }
+
+    @keyframes fadeUp {
+      from {
+        opacity: 0;
+        transform: translateY(25px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+      }
+
+      to {
+        opacity: 1;
+      }
+    }
+
+    @keyframes lineGrow {
+      from {
+        width: 0;
+      }
+
+      to {
+        width: 180px;
+      }
+    }
+
+    @keyframes rotate {
+      from {
+        transform: rotate(0deg);
+      }
+
+      to {
+        transform: rotate(360deg);
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <main class="slide">
+
+    <div class="circle"></div>
+
+    <div class="corner top-left">
+      CROSS-CULTURAL COMPETENCE
+    </div>
+
+    <div class="corner bottom-right">
+      2026
+    </div>
+
+    <div class="content">
+
+      <div class="eyebrow">
+        外教社杯 · 全国大学生跨文化能力大赛
+      </div>
+
+      <h1>
+        跨文化
+      </h1>
+
+      <div class="subtitle">
+        在差异中理解，在交流中连接
+      </div>
+
+      <div class="line"></div>
+
+    </div>
+
+  </main>
+
+</body>
+</html>
