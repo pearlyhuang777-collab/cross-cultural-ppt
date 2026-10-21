@@ -1,64 +1,300 @@
+# -*- coding: utf-8 -*-
+"""
+Perle's Career Development Presentation
+大学生职业规划大赛
+输出：可编辑的 PowerPoint 文件（.pptx）
+设计：American Editorial + Data Visualization + Minimalist Consulting Report
+
+运行环境：
+Python 3.10+
+pip install python-pptx
+
+运行方式：
+python main.py
+
+生成文件：
+Perle_Career_Development_Plan.pptx
+
+说明：
+1. 全部标题、正文、数据、图表、线条和色块均为可编辑 PowerPoint 元素。
+2. 不依赖付费字体。
+3. 默认使用 Inter 和思源黑体。
+4. 可将个人照片放入 assets 文件夹，按照下方配置自动替换占位区域。
+5. 本脚本只生成 PPTX，不生成网页。
+"""
+
+from pathlib import Path
 from pptx import Presentation
 from pptx.util import Inches, Pt
 from pptx.enum.text import PP_ALIGN, MSO_ANCHOR
 from pptx.enum.shapes import MSO_SHAPE, MSO_CONNECTOR
 from pptx.dml.color import RGBColor
 from pptx.enum.dml import MSO_THEME_COLOR
-from pptx.enum.text import MSO_AUTO_SIZE
-from pptx.enum.shapes import MSO_SHAPE_TYPE
-import os, math, textwrap
+from pptx.oxml import parse_xml
+from pptx.oxml.ns import nsdecls
 
-out = "/mnt/data/成长赛道_大学第一年成长档案.pptx"
+
+# ============================================================
+# 01. GLOBAL CONFIGURATION
+# ============================================================
+
+OUTPUT_FILE = "Perle_Career_Development_Plan.pptx"
+
+BASE_DIR = Path(__file__).resolve().parent
+ASSETS_DIR = BASE_DIR / "assets"
+
+# Put your own photos in assets/ and update the paths below.
+# Example:
+# ASSETS = {
+#     "cover": "assets/cover.jpg",
+#     "macau": "assets/macau.jpg",
+#     "australia": "assets/australia.jpg",
+#     "classroom": "assets/classroom.jpg",
+#     "teaching": "assets/teaching.jpg",
+#     "ai_prototype": "assets/ai_prototype.png",
+#     "ending": "assets/ending.jpg",
+# }
+
+ASSETS = {
+    "cover": "assets/cover.jpg",
+    "macau": "assets/macau.jpg",
+    "australia": "assets/australia.jpg",
+    "classroom": "assets/classroom.jpg",
+    "teaching": "assets/teaching.jpg",
+    "ai_prototype": "assets/ai_prototype.png",
+    "ending": "assets/ending.jpg",
+}
+
+# 16:9 widescreen presentation
+SLIDE_W = 13.333333
+SLIDE_H = 7.5
+
+# Free fonts
+FONT_EN = "Inter"
+FONT_CN = "Source Han Sans SC"
+FONT_FALLBACK_CN = "Microsoft YaHei"
+
+# Color palette
+C = {
+    "graphite": "25272A",
+    "paper": "F5F4F0",
+    "white": "FFFFFF",
+    "slate": "72777C",
+    "mist": "B8C8D1",
+    "steel": "55788A",
+    "coral": "EF6474",
+    "pale_coral": "F7DDE0",
+    "light_gray": "E5E4DF",
+    "mid_gray": "B7B7B1",
+    "dark_gray": "414449",
+    "soft_white": "FAF9F6",
+}
 
 prs = Presentation()
-prs.slide_width = Inches(13.333)
-prs.slide_height = Inches(7.5)
+prs.slide_width = Inches(SLIDE_W)
+prs.slide_height = Inches(SLIDE_H)
 
-# Palette sampled/approximated from user's two reference images
-BG = "F4F0E8"
-PINK = "DDA0C0"
-PALE_PINK = "F1D7E4"
-WHITE = "FFFDF8"
-INK = "242424"
-MUTED = "77716A"
-BLUE = "527A91"
-MINT = "9DC9C1"
-YELLOW = "F0D96B"
-CORAL = "D98278"
-LINE = "D9D5CE"
-SOFTBLUE = "E5EEF2"
-SOFTMINT = "E5F1EE"
-SOFTYELLOW = "FBF3D2"
-SOFTCORAL = "F5E4E0"
+# Remove default theme placeholders by using blank layouts.
+BLANK = prs.slide_layouts[6]
 
-FONT_CN = "Microsoft YaHei"
-FONT_EN = "Arial"
 
-def rgb(h):
-    return RGBColor.from_string(h)
+# ============================================================
+# 02. CORE HELPERS
+# ============================================================
 
-def set_bg(slide, color=BG):
-    fill = slide.background.fill
-    fill.solid()
-    fill.fore_color.rgb = rgb(color)
+def rgb(hex_color):
+    """Convert HEX to RGBColor."""
+    hex_color = hex_color.replace("#", "")
+    return RGBColor(
+        int(hex_color[0:2], 16),
+        int(hex_color[2:4], 16),
+        int(hex_color[4:6], 16),
+    )
 
-def add_shape(slide, shape_type, x, y, w, h, fill, line=None, radius=False, transparency=0):
-    sh = slide.shapes.add_shape(shape_type, Inches(x), Inches(y), Inches(w), Inches(h))
-    sh.fill.solid()
-    sh.fill.fore_color.rgb = rgb(fill)
-    sh.fill.transparency = transparency
+
+def set_cell_margins(cell, margin=0.05):
+    """Set table cell margins in inches."""
+    cell.margin_left = Inches(margin)
+    cell.margin_right = Inches(margin)
+    cell.margin_top = Inches(margin)
+    cell.margin_bottom = Inches(margin)
+
+
+def set_run_font(run, font_name, size, color, bold=False, italic=False):
+    """Set font properties for a text run."""
+    run.font.name = font_name
+    run.font.size = Pt(size)
+    run.font.bold = bold
+    run.font.italic = italic
+    run.font.color.rgb = rgb(color)
+
+    # Explicit East Asian font setting for editable Chinese text.
+    rpr = run._r.get_or_add_rPr()
+    rfonts = rpr.rFonts
+
+    if rfonts is not None:
+        rfonts.set("ascii", font_name)
+        rfonts.set("hAnsi", font_name)
+        rfonts.set("eastAsia", FONT_CN)
+
+
+def set_paragraph_spacing(paragraph, before=0, after=0, line_spacing=1.0):
+    paragraph.space_before = Pt(before)
+    paragraph.space_after = Pt(after)
+    paragraph.line_spacing = line_spacing
+
+
+def add_rect(
+    slide,
+    x,
+    y,
+    w,
+    h,
+    fill,
+    line=None,
+    radius=False,
+    transparency=0,
+):
+    """Add an editable rectangle or rounded rectangle."""
+    shape_type = (
+        MSO_SHAPE.ROUNDED_RECTANGLE if radius else MSO_SHAPE.RECTANGLE
+    )
+
+    shape = slide.shapes.add_shape(
+        shape_type,
+        Inches(x),
+        Inches(y),
+        Inches(w),
+        Inches(h),
+    )
+
+    shape.fill.solid()
+    shape.fill.fore_color.rgb = rgb(fill)
+
+    if transparency:
+        solid_fill = shape.fill._xPr.solidFill
+        color_node = solid_fill.srgbClr
+        alpha = parse_xml(
+            f'<a:alpha {nsdecls("a")} val="{100000 - transparency * 1000}"/>'
+        )
+        color_node.append(alpha)
+
     if line:
-        sh.line.color.rgb = rgb(line)
-        sh.line.width = Pt(0.8)
+        shape.line.color.rgb = rgb(line)
+        shape.line.width = Pt(0.6)
     else:
-        sh.line.fill.background()
-    return sh
+        shape.line.fill.background()
 
-def add_text(slide, text, x, y, w, h, size=14, color=INK, bold=False,
-             font=FONT_CN, align=PP_ALIGN.LEFT, valign=MSO_ANCHOR.MIDDLE,
-             margin=0.03, italic=False, fit=True):
-    tb = slide.shapes.add_textbox(Inches(x), Inches(y), Inches(w), Inches(h))
-    tf = tb.text_frame
+    return shape
+
+
+def add_line(slide, x1, y1, x2, y2, color=None, width=0.8):
+    """Add an editable straight line."""
+    line = slide.shapes.add_connector(
+        MSO_CONNECTOR.STRAIGHT,
+        Inches(x1),
+        Inches(y1),
+        Inches(x2),
+        Inches(y2),
+    )
+
+    line.line.color.rgb = rgb(color or C["light_gray"])
+    line.line.width = Pt(width)
+
+    return line
+
+
+def add_text(
+    slide,
+    text,
+    x,
+    y,
+    w,
+    h,
+    size=14,
+    color=None,
+    bold=False,
+    font=None,
+    align=PP_ALIGN.LEFT,
+    valign=MSO_ANCHOR.TOP,
+    margin=0,
+    italic=False,
+    fit=False,
+):
+    """Add editable text."""
+    box = slide.shapes.add_textbox(
+        Inches(x),
+        Inches(y),
+        Inches(w),
+        Inches(h),
+    )
+
+    tf = box.text_frame
+    tf.clear()
+    tf.word_wrap = True
+
+    tf.margin_left = Inches(margin)
+    tf.margin_right = Inches(margin)
+    tf.margin_top = Inches(margin)
+    tf.margin_bottom = Inches(margin)
+
+    tf.vertical_anchor = valign
+
+    p = tf.paragraphs[0]
+    p.alignment = align
+    p.space_before = Pt(0)
+    p.space_after = Pt(0)
+    p.line_spacing = 1.05
+
+    run = p.add_run()
+    run.text = str(text)
+
+    if font is None:
+        font = FONT_CN if any("\u4e00" <= ch <= "\u9fff" for ch in str(text)) else FONT_EN
+
+    set_run_font(
+        run,
+        font,
+        size,
+        color or C["graphite"],
+        bold=bold,
+        italic=italic,
+    )
+
+    if fit:
+        try:
+            tf.fit_text(font_family=font, max_size=size)
+        except Exception:
+            pass
+
+    return box
+
+
+def add_rich_text(
+    slide,
+    runs,
+    x,
+    y,
+    w,
+    h,
+    valign=MSO_ANCHOR.TOP,
+    align=PP_ALIGN.LEFT,
+    margin=0,
+):
+    """
+    Add a paragraph containing multiple editable runs.
+
+    runs example:
+    [
+        {"text": "01 ", "size": 16, "color": "EF6474", "bold": True},
+        {"text": "Language", "size": 16, "color": "25272A", "bold": True},
+    ]
+    """
+    box = slide.shapes.add_textbox(
+        Inches(x), Inches(y), Inches(w), Inches(h)
+    )
+
+    tf = box.text_frame
     tf.clear()
     tf.word_wrap = True
     tf.margin_left = Inches(margin)
@@ -66,322 +302,1938 @@ def add_text(slide, text, x, y, w, h, size=14, color=INK, bold=False,
     tf.margin_top = Inches(margin)
     tf.margin_bottom = Inches(margin)
     tf.vertical_anchor = valign
-    if fit:
-        tf.auto_size = MSO_AUTO_SIZE.TEXT_TO_FIT_SHAPE
+
     p = tf.paragraphs[0]
     p.alignment = align
     p.space_after = Pt(0)
-    r = p.add_run()
-    r.text = text
-    r.font.name = font
-    r.font.size = Pt(size)
-    r.font.bold = bold
-    r.font.italic = italic
-    r.font.color.rgb = rgb(color)
-    return tb
 
-def add_line(slide, x1, y1, x2, y2, color=LINE, width=1.2, dash=None):
-    line = slide.shapes.add_connector(MSO_CONNECTOR.STRAIGHT, Inches(x1), Inches(y1), Inches(x2), Inches(y2))
-    line.line.color.rgb = rgb(color)
-    line.line.width = Pt(width)
-    if dash:
-        line.line.dash_style = dash
-    return line
+    for item in runs:
+        run = p.add_run()
+        run.text = item.get("text", "")
 
-def add_paper(slide, title=None, page=None, subtitle=None, binding=True):
-    set_bg(slide)
-    # paper inset and subtle page edge
-    add_shape(slide, MSO_SHAPE.RECTANGLE, 0.30, 0.22, 12.73, 7.06, WHITE, LINE)
-    # very light ruled lines
-    for yy in [1.35, 1.72, 2.09, 2.46, 2.83, 3.20, 3.57, 3.94, 4.31, 4.68, 5.05, 5.42, 5.79, 6.16, 6.53]:
-        add_line(slide, 0.55, yy, 12.77, yy, "F1EEE8", 0.35)
-    if binding:
-        # binder holes and subtle rings
-        for yy in [0.70, 1.40, 2.10, 2.80, 3.50, 4.20, 4.90, 5.60, 6.30, 6.95]:
-            add_shape(slide, MSO_SHAPE.OVAL, 0.38, yy, 0.10, 0.10, BG, LINE)
-    if title:
-        add_text(slide, title, 0.78, 0.42, 9.8, 0.48, 27, INK, True)
-        if subtitle:
-            add_text(slide, subtitle, 0.80, 0.91, 10.5, 0.27, 10.5, MUTED, False, FONT_EN)
-    if page:
-        add_text(slide, f"{page:02d}", 12.15, 6.82, 0.42, 0.24, 9, MUTED, True, FONT_EN, PP_ALIGN.RIGHT)
+        font_name = item.get("font")
+        if font_name is None:
+            font_name = (
+                FONT_CN
+                if any(
+                    "\u4e00" <= ch <= "\u9fff"
+                    for ch in item.get("text", "")
+                )
+                else FONT_EN
+            )
 
-def add_card(slide, x, y, w, h, title, body="", accent=BLUE, fill=WHITE, title_size=16, body_size=12):
-    add_shape(slide, MSO_SHAPE.ROUNDED_RECTANGLE, x, y, w, h, fill, LINE)
-    add_shape(slide, MSO_SHAPE.RECTANGLE, x, y, 0.09, h, accent)
-    add_text(slide, title, x+0.20, y+0.12, w-0.34, 0.34, title_size, INK, True)
-    if body:
-        add_text(slide, body, x+0.20, y+0.52, w-0.34, h-0.62, body_size, MUTED, False, valign=MSO_ANCHOR.TOP)
+        set_run_font(
+            run,
+            font_name,
+            item.get("size", 14),
+            item.get("color", C["graphite"]),
+            item.get("bold", False),
+            item.get("italic", False),
+        )
 
-def add_photo_placeholder(slide, x, y, w, h, label, angle=0):
-    sh = add_shape(slide, MSO_SHAPE.RECTANGLE, x, y, w, h, WHITE, LINE)
-    # inner photo area
-    add_shape(slide, MSO_SHAPE.RECTANGLE, x+0.12, y+0.12, w-0.24, h-0.43, "EAE6DF", LINE)
-    # small image icon
-    add_shape(slide, MSO_SHAPE.OVAL, x+w*0.43, y+h*0.32, 0.18, 0.18, YELLOW)
-    add_shape(slide, MSO_SHAPE.ISOSCELES_TRIANGLE, x+w*0.28, y+h*0.42, w*0.43, h*0.26, MINT)
-    add_text(slide, label, x+0.12, y+h-0.28, w-0.24, 0.18, 8.5, MUTED, False, align=PP_ALIGN.CENTER)
-    return sh
+    return box
 
-def add_tag(slide, text, x, y, w, fill=PALE_PINK, color=INK, size=10):
-    add_shape(slide, MSO_SHAPE.ROUNDED_RECTANGLE, x, y, w, 0.30, fill)
-    add_text(slide, text, x+0.04, y+0.01, w-0.08, 0.26, size, color, True, align=PP_ALIGN.CENTER)
 
-def add_arrow(slide, x1,y1,x2,y2,color=BLUE,width=1.6):
-    ln=slide.shapes.add_connector(MSO_CONNECTOR.STRAIGHT, Inches(x1), Inches(y1), Inches(x2), Inches(y2))
-    ln.line.color.rgb=rgb(color)
-    ln.line.width=Pt(width)
-    ln.line.end_arrowhead = True
-    return ln
+def add_multiline(
+    slide,
+    lines,
+    x,
+    y,
+    w,
+    h,
+    size=12,
+    color=None,
+    font=None,
+    line_gap=7,
+    bullet=False,
+):
+    """Add multiple editable paragraphs."""
+    box = slide.shapes.add_textbox(
+        Inches(x), Inches(y), Inches(w), Inches(h)
+    )
 
-# Slide 1 cover
-s=prs.slides.add_slide(prs.slide_layouts[6]); set_bg(s)
-# subtle paper border
-add_shape(s, MSO_SHAPE.RECTANGLE, 0.34,0.28,12.65,6.94,WHITE,LINE)
-# folder body and tab
-add_shape(s, MSO_SHAPE.ROUNDED_RECTANGLE, 0.95,0.80,11.45,5.95,PINK,"C98BAA")
-add_shape(s, MSO_SHAPE.ROUNDED_RECTANGLE, 1.30,0.57,3.15,0.55,PINK,"C98BAA")
-# papers behind title
-add_shape(s, MSO_SHAPE.RECTANGLE, 1.55,1.30,10.10,4.90,WHITE,"E7DED8")
-# paper shadow-ish secondary layer
-add_shape(s, MSO_SHAPE.RECTANGLE, 1.42,1.20,10.10,4.90,"F8F5EF","E7DED8")
-# folder labels
-add_tag(s,"MY GROWTH JOURNEY · 2025–2026",1.85,1.48,2.85,PALE_PINK,INK,9.5)
-add_text(s,"在探索中成长",2.0,2.10,9.2,0.72,38,INK,True,align=PP_ALIGN.CENTER)
-add_text(s,"在实践中前进",2.0,2.88,9.2,0.72,38,INK,True,align=PP_ALIGN.CENTER)
-add_text(s,"全国大学生职业规划大赛  ·  成长赛道",2.2,3.82,8.8,0.40,16,MUTED,False,align=PP_ALIGN.CENTER)
-add_text(s,"我的大学第一年：从表达、实践到跨文化探索",2.2,4.36,8.8,0.34,13,INK,False,align=PP_ALIGN.CENTER)
-# photo polaroid
-add_photo_placeholder(s,10.15,0.92,1.45,1.78,"替换为本人照片")
-# tape
-add_shape(s, MSO_SHAPE.PARALLELOGRAM,1.15,5.72,1.15,0.28,YELLOW,None,transparency=15)
-add_text(s,"姓名｜学院｜专业｜年级",2.0,5.68,5.2,0.34,11,INK,False)
-add_text(s,"表达 · 实践 · 语言 · 跨文化 · AI",6.65,5.70,4.3,0.30,10,MUTED,False,align=PP_ALIGN.RIGHT)
+    tf = box.text_frame
+    tf.clear()
+    tf.word_wrap = True
+    tf.margin_left = 0
+    tf.margin_right = 0
+    tf.margin_top = 0
+    tf.margin_bottom = 0
 
-# Slide 2 growth map
-s=prs.slides.add_slide(prs.slide_layouts[6]); add_paper(s,"我的成长地图",2,"MY GROWTH MAP")
-add_photo_placeholder(s,0.88,1.58,2.45,2.80,"替换为本人校园照片")
-add_text(s,"汉语国际教育",0.90,4.55,2.35,0.34,16,INK,True,align=PP_ALIGN.CENTER)
-add_text(s,"大一成长关键词",0.92,4.95,2.3,0.26,11,MUTED,False,align=PP_ALIGN.CENTER)
-add_text(s,"表达｜实践｜语言｜探索",0.90,5.25,2.35,0.40,12,BLUE,True,align=PP_ALIGN.CENTER)
-cards=[
-    (3.75,1.58,3.90,1.72,"活动与表达","主持朗诵团、学院学生会文体部\n训练声音表达、活动组织与协作。",PINK,PALE_PINK),
-    (7.95,1.58,4.18,1.72,"语言与竞赛","普通话一级乙等、英语比赛经历\n持续积累语言表达与竞赛经验。",BLUE,SOFTBLUE),
-    (3.75,3.60,3.90,1.72,"专业与实践","进入留学生课堂担任助教\n获得汉语国际教师模拟面试一等奖。",MINT,SOFTMINT),
-    (7.95,3.60,4.18,1.72,"跨文化与 AI","澳门青年论坛、澳大利亚课程\n开始探索 AI 工具与教学设计。",YELLOW,SOFTYELLOW),
+    for idx, text in enumerate(lines):
+        p = tf.paragraphs[0] if idx == 0 else tf.add_paragraph()
+        p.space_before = Pt(0)
+        p.space_after = Pt(line_gap)
+        p.line_spacing = 1.12
+
+        if bullet:
+            p.text = ""
+            run = p.add_run()
+            run.text = "—  " + text
+        else:
+            run = p.add_run()
+            run.text = text
+
+        current_font = font or (
+            FONT_CN
+            if any("\u4e00" <= ch <= "\u9fff" for ch in text)
+            else FONT_EN
+        )
+
+        set_run_font(
+            run,
+            current_font,
+            size,
+            color or C["slate"],
+            False,
+        )
+
+    return box
+
+
+def add_image_or_placeholder(
+    slide,
+    key,
+    x,
+    y,
+    w,
+    h,
+    label="ADD YOUR PHOTO",
+    placeholder_fill=None,
+):
+    """
+    Add a real image if the configured path exists.
+    Otherwise create a clean editable placeholder.
+    """
+    image_path = ASSETS.get(key)
+
+    if image_path:
+        path = BASE_DIR / image_path
+        if path.exists():
+            try:
+                return slide.shapes.add_picture(
+                    str(path),
+                    Inches(x),
+                    Inches(y),
+                    width=Inches(w),
+                    height=Inches(h),
+                )
+            except Exception:
+                pass
+
+    add_rect(
+        slide,
+        x,
+        y,
+        w,
+        h,
+        placeholder_fill or C["light_gray"],
+    )
+
+    add_line(
+        slide,
+        x + 0.12,
+        y + 0.12,
+        x + w - 0.12,
+        y + h - 0.12,
+        C["mid_gray"],
+        0.6,
+    )
+    add_line(
+        slide,
+        x + w - 0.12,
+        y + 0.12,
+        x + 0.12,
+        y + h - 0.12,
+        C["mid_gray"],
+        0.6,
+    )
+
+    add_text(
+        slide,
+        label,
+        x + 0.15,
+        y + h / 2 - 0.12,
+        w - 0.3,
+        0.24,
+        size=9,
+        color=C["slate"],
+        font=FONT_EN,
+        align=PP_ALIGN.CENTER,
+        valign=MSO_ANCHOR.MIDDLE,
+    )
+
+    return None
+
+
+def add_header(slide, section, page_num, title, subtitle=None):
+    """Consistent header for pages 2–7."""
+    add_text(
+        slide,
+        f"{section} / CAREER DEVELOPMENT",
+        0.66,
+        0.30,
+        5.8,
+        0.22,
+        size=9,
+        color=C["steel"],
+        font=FONT_EN,
+        bold=True,
+    )
+
+    add_text(
+        slide,
+        title,
+        0.66,
+        0.73,
+        12.0,
+        0.55,
+        size=29,
+        color=C["graphite"],
+        bold=True,
+        font=FONT_CN,
+    )
+
+    if subtitle:
+        add_text(
+            slide,
+            subtitle,
+            0.68,
+            1.34,
+            11.8,
+            0.22,
+            size=9,
+            color=C["slate"],
+            font=FONT_EN,
+        )
+
+    add_line(
+        slide,
+        0.66,
+        1.70,
+        12.67,
+        1.70,
+        C["light_gray"],
+        0.7,
+    )
+
+    add_line(
+        slide,
+        0.66,
+        7.08,
+        12.67,
+        7.08,
+        C["light_gray"],
+        0.6,
+    )
+
+    add_text(
+        slide,
+        "PERLE  /  INTERNATIONAL CHINESE EDUCATION",
+        0.66,
+        7.15,
+        7.2,
+        0.16,
+        size=8,
+        color=C["slate"],
+        font=FONT_EN,
+    )
+
+    add_text(
+        slide,
+        f"{page_num:02d} / 08",
+        11.72,
+        7.13,
+        0.95,
+        0.2,
+        size=9,
+        color=C["graphite"],
+        font=FONT_EN,
+        align=PP_ALIGN.RIGHT,
+    )
+
+
+def new_slide():
+    slide = prs.slides.add_slide(BLANK)
+    slide.background.fill.solid()
+    slide.background.fill.fore_color.rgb = rgb(C["paper"])
+    return slide
+
+
+def add_section_number(slide, number, x, y):
+    add_text(
+        slide,
+        number,
+        x,
+        y,
+        0.45,
+        0.3,
+        size=14,
+        color=C["coral"],
+        font=FONT_EN,
+        bold=True,
+    )
+
+
+def add_bottom_conclusion(slide, text, y=6.55, size=17):
+    add_line(
+        slide,
+        0.66,
+        y - 0.18,
+        12.67,
+        y - 0.18,
+        C["light_gray"],
+        0.6,
+    )
+
+    add_rect(
+        slide,
+        0.66,
+        y + 0.04,
+        0.045,
+        0.34,
+        C["coral"],
+    )
+
+    add_text(
+        slide,
+        text,
+        0.86,
+        y,
+        11.5,
+        0.48,
+        size=size,
+        color=C["graphite"],
+        bold=True,
+        font=FONT_CN,
+        valign=MSO_ANCHOR.MIDDLE,
+    )
+
+
+# ============================================================
+# 03. SLIDE 01 — COVER
+# ============================================================
+
+slide = new_slide()
+
+# Top label
+add_text(
+    slide,
+    "CAREER  /  2026",
+    0.75,
+    0.55,
+    3.0,
+    0.25,
+    size=10,
+    color=C["steel"],
+    font=FONT_EN,
+    bold=True,
+)
+
+# Cover headline
+add_text(
+    slide,
+    "让中文走向世界，",
+    0.75,
+    1.68,
+    7.3,
+    0.72,
+    size=35,
+    color=C["graphite"],
+    bold=True,
+    font=FONT_CN,
+)
+
+add_text(
+    slide,
+    "让教育连接未来。",
+    0.75,
+    2.48,
+    7.3,
+    0.72,
+    size=35,
+    color=C["graphite"],
+    bold=True,
+    font=FONT_CN,
+)
+
+# Coral accent
+add_rect(
+    slide,
+    0.77,
+    3.48,
+    0.68,
+    0.045,
+    C["coral"],
+)
+
+add_text(
+    slide,
+    "MY CAREER DEVELOPMENT PLAN",
+    0.77,
+    3.78,
+    5.6,
+    0.3,
+    size=11,
+    color=C["steel"],
+    font=FONT_EN,
+    bold=True,
+)
+
+add_text(
+    slide,
+    "大学生职业规划大赛",
+    0.77,
+    4.47,
+    4.7,
+    0.42,
+    size=18,
+    color=C["graphite"],
+    bold=True,
+    font=FONT_CN,
+)
+
+add_text(
+    slide,
+    "汉语国际教育  /  本科二年级",
+    0.77,
+    5.04,
+    4.8,
+    0.32,
+    size=13,
+    color=C["slate"],
+    font=FONT_CN,
+)
+
+add_text(
+    slide,
+    "LANGUAGE  ·  CULTURE  ·  EDUCATION",
+    0.77,
+    6.47,
+    5.4,
+    0.24,
+    size=9,
+    color=C["slate"],
+    font=FONT_EN,
+)
+
+# Photo panel
+add_image_or_placeholder(
+    slide,
+    "cover",
+    8.45,
+    0.78,
+    4.1,
+    5.85,
+    label="YOUR SPEAKING / HOSTING PHOTO",
+    placeholder_fill=C["light_gray"],
+)
+
+# Right-side coral marker
+add_rect(
+    slide,
+    8.45,
+    0.78,
+    0.055,
+    0.85,
+    C["coral"],
+)
+
+add_line(
+    slide,
+    0.75,
+    6.95,
+    12.58,
+    6.95,
+    C["light_gray"],
+    0.7,
+)
+
+add_text(
+    slide,
+    "PERLE  /  CAREER DEVELOPMENT",
+    0.75,
+    7.08,
+    5.0,
+    0.18,
+    size=8,
+    color=C["slate"],
+    font=FONT_EN,
+)
+
+add_text(
+    slide,
+    "01 / 08",
+    11.72,
+    7.07,
+    0.86,
+    0.2,
+    size=9,
+    color=C["graphite"],
+    font=FONT_EN,
+    align=PP_ALIGN.RIGHT,
+)
+
+
+# ============================================================
+# 04. SLIDE 02 — CAREER POSITIONING
+# ============================================================
+
+slide = new_slide()
+
+add_header(
+    slide,
+    "01",
+    2,
+    "国际中文教师：我的职业目标",
+    "A CAREER BUILT ON LANGUAGE, CULTURE & EDUCATION",
+)
+
+# Left positioning panel
+add_rect(
+    slide,
+    0.66,
+    2.05,
+    4.1,
+    4.15,
+    C["white"],
+)
+
+add_text(
+    slide,
+    "CAREER TARGET",
+    0.96,
+    2.36,
+    2.7,
+    0.25,
+    size=10,
+    color=C["steel"],
+    font=FONT_EN,
+    bold=True,
+)
+
+add_text(
+    slide,
+    "国际中文教师",
+    0.96,
+    3.03,
+    3.5,
+    0.62,
+    size=28,
+    color=C["graphite"],
+    bold=True,
+    font=FONT_CN,
+)
+
+add_rect(
+    slide,
+    0.98,
+    3.92,
+    0.55,
+    0.045,
+    C["coral"],
+)
+
+add_multiline(
+    slide,
+    [
+        "以中文教学为核心，",
+        "结合跨文化沟通与数字化教学探索，",
+        "帮助不同文化背景的学习者",
+        "理解、学习和使用中文。",
+    ],
+    0.98,
+    4.22,
+    3.35,
+    1.5,
+    size=14,
+    color=C["slate"],
+    line_gap=9,
+)
+
+add_text(
+    slide,
+    "TEACHING IS THE CORE.",
+    0.98,
+    5.78,
+    3.4,
+    0.22,
+    size=9,
+    color=C["steel"],
+    font=FONT_EN,
+    bold=True,
+)
+
+# Right capability modules
+modules = [
+    (
+        "01",
+        "LANGUAGE",
+        "语言表达",
+        "语言运用、课堂表达、内容组织",
+    ),
+    (
+        "02",
+        "CULTURE",
+        "跨文化沟通",
+        "文化理解、学习者视角、情境沟通",
+    ),
+    (
+        "03",
+        "TECHNOLOGY",
+        "数字化教学",
+        "AI 辅助设计、互动活动、数字工具探索",
+    ),
 ]
-for x,y,w,h,t,b,a,f in cards: add_card(s,x,y,w,h,t,b,a,f,15,11.5)
-add_text(s,"成长主线：语言基础 → 实践参与 → 跨文化观察 → 教学创新探索",3.85,5.70,8.1,0.40,13,INK,True,align=PP_ALIGN.CENTER)
 
-# Slide 3 timeline
-s=prs.slides.add_slide(prs.slide_layouts[6]); add_paper(s,"大一成长时间轴",3,"MY FIRST-YEAR JOURNEY")
-timeline=[
-    (0.95,"校园探索","加入艺术团与学生会",PINK),
-    (4.05,"能力实践","主持、组织与语言竞赛",BLUE),
-    (7.15,"跨文化体验","论坛、海外课程与交流",MINT),
-    (10.25,"持续拓展","多语种与 AI 工具学习",YELLOW),
+module_y = [2.15, 3.52, 4.89]
+
+for (num, eng, cn, desc), y in zip(modules, module_y):
+    add_line(
+        slide,
+        5.15,
+        y,
+        12.55,
+        y,
+        C["light_gray"],
+        0.8,
+    )
+
+    add_section_number(slide, num, 5.2, y + 0.24)
+
+    add_text(
+        slide,
+        eng,
+        5.85,
+        y + 0.24,
+        2.3,
+        0.22,
+        size=9,
+        color=C["steel"],
+        font=FONT_EN,
+        bold=True,
+    )
+
+    add_text(
+        slide,
+        cn,
+        5.85,
+        y + 0.52,
+        2.55,
+        0.38,
+        size=18,
+        color=C["graphite"],
+        bold=True,
+        font=FONT_CN,
+    )
+
+    add_text(
+        slide,
+        desc,
+        8.65,
+        y + 0.47,
+        3.65,
+        0.42,
+        size=12,
+        color=C["slate"],
+        font=FONT_CN,
+        valign=MSO_ANCHOR.MIDDLE,
+    )
+
+add_line(
+    slide,
+    5.15,
+    6.26,
+    12.55,
+    6.26,
+    C["light_gray"],
+    0.8,
+)
+
+add_bottom_conclusion(
+    slide,
+    "教学是核心，沟通是桥梁，技术是助力。",
+    y=6.55,
+    size=17,
+)
+
+
+# ============================================================
+# 05. SLIDE 03 — EVIDENCE & CAPABILITIES
+# ============================================================
+
+slide = new_slide()
+
+add_header(
+    slide,
+    "02",
+    3,
+    "我的能力，不止于表达",
+    "TURNING EXPERIENCE INTO PROFESSIONAL CAPABILITY",
+)
+
+# Awards section label
+add_text(
+    slide,
+    "SELECTED ACHIEVEMENTS",
+    0.68,
+    1.88,
+    4.5,
+    0.22,
+    size=10,
+    color=C["steel"],
+    font=FONT_EN,
+    bold=True,
+)
+
+award_cards = [
+    {
+        "x": 0.66,
+        "title": "英语演讲比赛",
+        "award": "中国组一等奖",
+        "note": "PUBLIC SPEAKING",
+    },
+    {
+        "x": 4.73,
+        "title": "英语短视频大赛",
+        "award": "校级一等奖",
+        "note": "CONTENT CREATION",
+    },
+    {
+        "x": 8.80,
+        "title": "英语短视频大赛",
+        "award": "市级二等奖",
+        "note": "MULTIMEDIA",
+    },
 ]
-add_line(s,1.55,2.15,11.65,2.15,LINE,2.2)
-for x,t,b,c in timeline:
-    add_shape(s,MSO_SHAPE.OVAL,x+0.82,1.91,0.46,0.46,c)
-    add_card(s,x,2.62,2.55,2.05,t,b,c,WHITE,15,11.5)
-    add_tag(s,["01 · 参与","02 · 实践","03 · 观察","04 · 探索"][timeline.index((x,t,b,c))],x+0.22,4.82,1.45,c,INK,9)
-add_text(s,"这一年的变化",0.95,5.55,1.75,0.32,15,INK,True)
-add_card(s,2.75,5.38,2.85,0.95,"从表达开始","练习声音与舞台表达",PINK,WHITE,12,10)
-add_card(s,5.85,5.38,2.85,0.95,"走进专业","从课堂走向教学实践",BLUE,WHITE,12,10)
-add_card(s,8.95,5.38,3.10,0.95,"打开视野","关注文化差异与 AI 应用",MINT,WHITE,12,10)
 
-# Slide 4 campus practice
-s=prs.slides.add_slide(prs.slide_layouts[6]); add_paper(s,"校园实践：表达与组织能力",4,"01 · EXPRESSION & PRACTICE")
-add_photo_placeholder(s,0.95,1.62,2.55,2.48,"主持朗诵团")
-add_photo_placeholder(s,2.65,3.22,2.75,2.40,"学院学生会文体部")
-add_photo_placeholder(s,4.25,1.72,2.20,1.80,"校园活动")
-add_text(s,"把参与变成经验",1.0,5.88,5.3,0.36,15,INK,True,align=PP_ALIGN.CENTER)
-add_card(s,6.85,1.60,5.25,1.25,"声音表达","通过主持、朗诵与语言训练，积累舞台表达经验。",PINK,WHITE,15,11)
-add_card(s,6.85,3.05,5.25,1.25,"活动组织","参与学院文体活动的组织与协作，熟悉活动执行流程。",BLUE,WHITE,15,11)
-add_card(s,6.85,4.50,5.25,1.25,"团队协作","在团队配合中提升沟通协调与现场执行意识。",MINT,WHITE,15,11)
-add_shape(s,MSO_SHAPE.ROUNDED_RECTANGLE,6.95,6.00,5.05,0.48,SOFTYELLOW,YELLOW)
-add_text(s,"从完成一次表达，到理解一场活动如何运转。",7.10,6.04,4.75,0.36,11.5,INK,True,align=PP_ALIGN.CENTER)
+for card in award_cards:
+    x = card["x"]
 
-# Slide 5 language map
-s=prs.slides.add_slide(prs.slide_layouts[6]); add_paper(s,"语言能力：从基础到多语种规划",5,"02 · LANGUAGE DEVELOPMENT")
-add_text(s,"LANGUAGE LEARNING MAP",0.92,1.42,5.5,0.28,12,BLUE,True,FONT_EN)
-# stages as three columns
-stage_x=[0.95,3.05,5.15]
-stage_data=[
-    ("已有基础",["中文｜普通话一级乙等","英语｜竞赛与学习基础"],BLUE,SOFTBLUE),
-    ("正在学习",["法语｜持续学习","日语｜持续学习"],MINT,SOFTMINT),
-    ("未来计划",["韩语｜大三课程","西班牙语｜计划大四"],YELLOW,SOFTYELLOW)
+    add_rect(
+        slide,
+        x,
+        2.20,
+        3.86,
+        1.45,
+        C["white"],
+    )
+
+    add_rect(
+        slide,
+        x,
+        2.20,
+        3.86,
+        0.045,
+        C["coral"],
+    )
+
+    add_text(
+        slide,
+        card["note"],
+        x + 0.22,
+        2.40,
+        3.25,
+        0.2,
+        size=9,
+        color=C["steel"],
+        font=FONT_EN,
+        bold=True,
+    )
+
+    add_text(
+        slide,
+        card["title"],
+        x + 0.22,
+        2.72,
+        3.35,
+        0.3,
+        size=13,
+        color=C["slate"],
+        font=FONT_CN,
+    )
+
+    add_text(
+        slide,
+        card["award"],
+        x + 0.22,
+        3.07,
+        3.4,
+        0.4,
+        size=19,
+        color=C["graphite"],
+        font=FONT_CN,
+        bold=True,
+    )
+
+# Matrix label
+add_text(
+    slide,
+    "EXPERIENCE → TRANSFERABLE SKILLS",
+    0.68,
+    3.91,
+    5.8,
+    0.23,
+    size=10,
+    color=C["steel"],
+    font=FONT_EN,
+    bold=True,
+)
+
+# Matrix headers
+add_rect(
+    slide,
+    0.66,
+    4.24,
+    4.28,
+    0.4,
+    C["light_gray"],
+)
+
+add_rect(
+    slide,
+    5.10,
+    4.24,
+    7.45,
+    0.4,
+    C["light_gray"],
+)
+
+add_text(
+    slide,
+    "已有经历",
+    0.86,
+    4.31,
+    3.8,
+    0.22,
+    size=12,
+    color=C["graphite"],
+    bold=True,
+    font=FONT_CN,
+)
+
+add_text(
+    slide,
+    "对应职业能力",
+    5.32,
+    4.31,
+    6.6,
+    0.22,
+    size=12,
+    color=C["graphite"],
+    bold=True,
+    font=FONT_CN,
+)
+
+rows = [
+    ("英语演讲比赛", "语言表达与信息组织"),
+    ("英语短视频创作", "内容设计与多媒体表达"),
+    ("学院文体部工作", "活动策划与团队协作"),
+    ("公开活动主持", "现场表达与流程控制"),
+    ("跨文化项目交流", "英语沟通与文化理解"),
+    ("教学展示与课堂观察", "教学意识与学习者视角"),
 ]
-for x,(t,items,c,f) in zip(stage_x,stage_data):
-    add_shape(s,MSO_SHAPE.ROUNDED_RECTANGLE,x,1.85,1.85,3.55,f,LINE)
-    add_shape(s,MSO_SHAPE.RECTANGLE,x,1.85,1.85,0.52,c)
-    add_text(s,t,x+0.08,1.91,1.69,0.34,14,INK,True,align=PP_ALIGN.CENTER)
-    yy=2.65
-    for item in items:
-        add_shape(s,MSO_SHAPE.ROUNDED_RECTANGLE,x+0.13,yy,1.58,0.82,WHITE,LINE)
-        add_text(s,item,x+0.20,yy+0.08,1.44,0.66,10.5,INK,True,align=PP_ALIGN.CENTER)
-        yy+=1.02
-add_arrow(s,2.82,3.55,3.00,3.55,BLUE,1.8); add_arrow(s,4.92,3.55,5.10,3.55,BLUE,1.8)
-add_text(s,"现有基础",0.98,5.65,1.45,0.28,11,BLUE,True,align=PP_ALIGN.CENTER)
-add_arrow(s,2.50,5.80,3.20,5.80,LINE,1.6)
-add_text(s,"持续学习",3.22,5.65,1.45,0.28,11,BLUE,True,align=PP_ALIGN.CENTER)
-add_arrow(s,4.70,5.80,5.40,5.80,LINE,1.6)
-add_text(s,"多语种应用",5.45,5.65,1.60,0.28,11,BLUE,True,align=PP_ALIGN.CENTER)
-add_card(s,7.35,1.55,4.70,1.18,"普通话水平","普通话水平测试：一级乙等",PINK,WHITE,14,11)
-add_card(s,7.35,2.95,4.70,1.18,"外语竞赛","将真实比赛名称、奖项与证书照片补充在此处。",BLUE,WHITE,14,10.5)
-add_card(s,7.35,4.35,4.70,1.18,"阶段目标","大三目标：雅思 7.5 分；持续提升英语学术表达。",MINT,WHITE,14,10.5)
-add_text(s,"说明：语言学习阶段按真实进度呈现，不使用虚构的熟练度百分比。",7.38,5.75,4.65,0.55,9.5,MUTED,False)
 
-# Slide 6 competitions bar chart editable native shapes
-s=prs.slides.add_slide(prs.slide_layouts[6]); add_paper(s,"竞赛成果：让语言能力被看见",6,"03 · COMPETITION & ACHIEVEMENTS")
-add_text(s,"奖项数量统计",0.95,1.42,4.8,0.32,16,INK,True)
-add_text(s,"请根据真实获奖清单填写数量；当前为待补充模板。",0.95,1.78,6.2,0.26,10,MUTED)
-# chart panel
-add_shape(s,MSO_SHAPE.ROUNDED_RECTANGLE,0.92,2.15,7.45,3.95,WHITE,LINE)
-add_text(s,"不同竞赛类别的获奖数量",1.20,2.35,5.9,0.32,14,INK,True)
-cats=["英语演讲与表达","英语辩论","英语讲述中国故事","汉语国际教育相关竞赛"]
-yy=2.98
-for i,cat in enumerate(cats):
-    add_text(s,cat,1.18,yy,1.90,0.32,10.5,INK,False)
-    add_shape(s,MSO_SHAPE.RECTANGLE,3.18,yy+0.03,3.75,0.25,"EEEAE2")
-    add_shape(s,MSO_SHAPE.RECTANGLE,3.18,yy+0.03,0.18,0.25,[BLUE,MINT,YELLOW,CORAL][i])
-    add_text(s,"待填写",6.98,yy-0.01,0.90,0.30,9.5,MUTED,False,align=PP_ALIGN.CENTER)
-    yy+=0.70
-add_text(s,"柱长与数值须根据真实获奖清单生成，不得自动填入假数据。",1.18,5.72,6.65,0.22,9,MUTED,False)
-# right award cards
-add_text(s,"成果分类",8.75,1.48,3.1,0.32,16,INK,True)
-add_card(s,8.70,1.95,3.45,0.90,"语言表达","演讲、朗诵与口头表达",PINK,WHITE,12,10)
-add_card(s,8.70,3.02,3.45,0.90,"逻辑与协作","辩论与团队配合",BLUE,WHITE,12,10)
-add_card(s,8.70,4.09,3.45,0.90,"专业能力","国际中文教育相关竞赛",MINT,WHITE,12,10)
-add_shape(s,MSO_SHAPE.ROUNDED_RECTANGLE,8.70,5.25,3.45,0.75,SOFTYELLOW,YELLOW)
-add_text(s,"竞赛经历 → 表达能力 → 实践应用",8.86,5.34,3.15,0.55,10.5,INK,True,align=PP_ALIGN.CENTER)
+row_y = 4.64
+row_h = 0.245
 
-# Slide 7 intercultural
-s=prs.slides.add_slide(prs.slide_layouts[6]); add_paper(s,"跨文化实践：从观察到理解",7,"04 · INTERCULTURAL EXPERIENCE")
-add_photo_placeholder(s,0.95,1.55,3.10,2.20,"澳门青年论坛")
-add_photo_placeholder(s,2.55,4.05,3.15,2.05,"澳大利亚课程")
-add_text(s,"跨文化交流经历",1.05,6.25,4.6,0.28,12,INK,True,align=PP_ALIGN.CENTER)
-# right process cards
-add_card(s,6.15,1.60,5.85,1.20,"01 · PRACTICE｜参与实践","在澳门青年论坛进行演讲，并参加澳大利亚人工智能与批判性思维课程。",PINK,WHITE,14,10.5)
-add_arrow(s,9.05,2.82,9.05,3.02,BLUE,1.4)
-add_card(s,6.15,3.08,5.85,1.20,"02 · OBSERVATION｜观察差异","与不同文化背景的学生交流、采访，关注思维方式与表达习惯。",BLUE,WHITE,14,10.5)
-add_arrow(s,9.05,4.30,9.05,4.50,BLUE,1.4)
-add_card(s,6.15,4.56,5.85,1.20,"03 · REFLECTION｜形成认识","理解跨文化沟通中，倾听与理解背景同样重要。",MINT,WHITE,14,10.5)
-add_shape(s,MSO_SHAPE.ROUNDED_RECTANGLE,6.30,6.05,5.55,0.42,SOFTYELLOW,YELLOW)
-add_text(s,"从真实交流中理解差异，而不只停留在理论层面。",6.42,6.08,5.30,0.32,10.5,INK,True,align=PP_ALIGN.CENTER)
+for idx, (experience, skill) in enumerate(rows):
+    y = row_y + idx * row_h
 
-# Slide 8 professional practice
-s=prs.slides.add_slide(prs.slide_layouts[6]); add_paper(s,"专业实践：从课堂学习到教学观察",8,"05 · FROM LEARNING TO TEACHING")
-add_photo_placeholder(s,0.98,1.62,4.80,3.45,"替换为认识实习／留学生课堂真实照片")
-add_text(s,"专业实践现场",1.15,5.20,4.45,0.30,13,INK,True,align=PP_ALIGN.CENTER)
-add_card(s,6.25,1.58,5.75,1.22,"课堂助教","进入留学生课堂担任助教，观察课堂教学与师生互动。",PINK,WHITE,14,10.5)
-add_card(s,6.25,3.02,5.75,1.22,"教学观察","从学习者需求出发，理解课堂组织与教学设计。",BLUE,WHITE,14,10.5)
-add_card(s,6.25,4.46,5.75,1.22,"模拟面试一等奖","获得汉语国际教师模拟面试一等奖。",MINT,WHITE,14,10.5)
-add_text(s,"专业学习",1.00,6.25,1.45,0.28,11,BLUE,True,align=PP_ALIGN.CENTER)
-add_arrow(s,2.48,6.39,3.12,6.39,LINE,1.5)
-add_text(s,"课堂观察",3.18,6.25,1.45,0.28,11,BLUE,True,align=PP_ALIGN.CENTER)
-add_arrow(s,4.66,6.39,5.30,6.39,LINE,1.5)
-add_text(s,"教学实践",5.38,6.25,1.45,0.28,11,BLUE,True,align=PP_ALIGN.CENTER)
+    add_text(
+        slide,
+        experience,
+        0.86,
+        y,
+        3.8,
+        0.22,
+        size=11,
+        color=C["graphite"],
+        font=FONT_CN,
+    )
 
-# Slide 9 AI exploration
-s=prs.slides.add_slide(prs.slide_layouts[6]); add_paper(s,"AI 探索：数字工具与教学创新",9,"06 · AI & TEACHING INNOVATION")
-add_text(s,"我的探索路径",0.95,1.40,5.5,0.30,15,INK,True)
-flow=[("01","关注价值","思考 AI 在学习与教学中的应用",PINK),
-      ("02","学习工具","开始研究 GitHub 与 Codex",BLUE),
-      ("03","尝试应用","探索课堂游戏与教学内容设计",MINT)]
-for i,(num,t,b,c) in enumerate(flow):
-    y=1.88+i*1.40
-    add_shape(s,MSO_SHAPE.OVAL,1.02,y+0.12,0.50,0.50,c)
-    add_text(s,num,1.05,y+0.15,0.44,0.42,10,INK,True,FONT_EN,PP_ALIGN.CENTER)
-    add_card(s,1.72,y,4.85,0.88,t,b,c,WHITE,14,10.5)
-    if i<2: add_arrow(s,3.95,y+0.90,3.95,y+1.30,LINE,1.4)
-add_text(s,"教学设计工作流",7.10,1.40,4.7,0.30,15,INK,True)
-steps=[("教学目标",PINK),("内容设计",BLUE),("课堂游戏",MINT),("互动反馈",YELLOW)]
-for i,(t,c) in enumerate(steps):
-    y=1.95+i*0.94
-    add_shape(s,MSO_SHAPE.ROUNDED_RECTANGLE,7.15,y,4.65,0.62,WHITE,c)
-    add_shape(s,MSO_SHAPE.OVAL,7.36,y+0.15,0.30,0.30,c)
-    add_text(s,t,7.88,y+0.09,3.45,0.42,13,INK,True)
-    if i<3: add_arrow(s,9.45,y+0.64,9.45,y+0.88,BLUE,1.2)
-# code window decoration
-add_shape(s,MSO_SHAPE.ROUNDED_RECTANGLE,7.18,5.88,4.62,0.62,"F0EEE8",LINE)
-add_text(s,"// learning by building · teaching by designing",7.35,5.99,4.25,0.34,9,MUTED,False,FONT_EN,italic=True)
-add_text(s,"目标：学习用合适的工具解决真实教学问题。",1.75,6.25,4.75,0.35,11,INK,True)
+    add_text(
+        slide,
+        skill,
+        5.32,
+        y,
+        6.8,
+        0.22,
+        size=11,
+        color=C["steel"],
+        font=FONT_CN,
+    )
 
-# Slide 10 growth review table
-s=prs.slides.add_slide(prs.slide_layouts[6]); add_paper(s,"成长复盘：经历如何转化为能力",10,"07 · MY GROWTH REVIEW")
-# table panel
-add_shape(s,MSO_SHAPE.ROUNDED_RECTANGLE,0.92,1.50,7.65,4.85,WHITE,LINE)
-cols=[1.08,3.08,5.55]
-widths=[1.95,2.42,2.75]
-headers=["经历","能力积累","未来应用"]
-for x,w,h in zip(cols,widths,headers):
-    add_shape(s,MSO_SHAPE.RECTANGLE,x,1.70,w,0.52,SOFTBLUE,LINE)
-    add_text(s,h,x+0.05,1.76,w-0.10,0.38,12,INK,True,align=PP_ALIGN.CENTER)
-rows=[
-    ("主持与校园活动","表达、组织","课堂讲授、活动设计"),
-    ("外语竞赛","语言表达、临场反应","跨文化沟通"),
-    ("留学生课堂助教","教学观察","国际中文教育"),
-    ("海外课程与采访","跨文化理解","多元文化教学"),
-    ("AI 工具探索","数字化学习","教学资源设计"),
+    if idx < len(rows) - 1:
+        add_line(
+            slide,
+            0.85,
+            y + 0.235,
+            12.25,
+            y + 0.235,
+            C["light_gray"],
+            0.45,
+        )
+
+add_bottom_conclusion(
+    slide,
+    "从语言表达出发，向教学能力延伸。",
+    y=6.55,
+    size=17,
+)
+
+
+# ============================================================
+# 06. SLIDE 04 — CROSS-CULTURAL EXPERIENCE
+# ============================================================
+
+slide = new_slide()
+
+add_header(
+    slide,
+    "03",
+    4,
+    "从语言表达走向文化理解",
+    "LEARNING THROUGH REAL-WORLD INTERACTION",
+)
+
+experience_cards = [
+    {
+        "x": 0.66,
+        "num": "01",
+        "region": "MACAU",
+        "title": "澳门英语演讲活动",
+        "image": "macau",
+        "label": "YOUR EVENT PHOTO",
+        "cap_en": "PUBLIC COMMUNICATION",
+        "cap_cn": "公开表达与信息组织",
+    },
+    {
+        "x": 4.73,
+        "num": "02",
+        "region": "AUSTRALIA",
+        "title": "西澳大学项目",
+        "image": "australia",
+        "label": "YOUR PROJECT PHOTO",
+        "cap_en": "INTERCULTURAL INTERACTION",
+        "cap_cn": "真实沟通与文化理解",
+    },
+    {
+        "x": 8.80,
+        "num": "03",
+        "region": "CLASSROOM",
+        "title": "留学生课堂实践",
+        "image": "classroom",
+        "label": "YOUR CLASSROOM PHOTO",
+        "cap_en": "LEARNER PERSPECTIVE",
+        "cap_cn": "课堂观察与学习者视角",
+    },
 ]
-y=2.25
-for ri,row in enumerate(rows):
-    fill=WHITE if ri%2==0 else "FAF8F3"
-    for ci,(x,w,txt) in enumerate(zip(cols,widths,row)):
-        add_shape(s,MSO_SHAPE.RECTANGLE,x,y,w,0.70,fill,LINE)
-        add_text(s,txt,x+0.08,y+0.08,w-0.16,0.54,10.2,INK,ci==0,align=PP_ALIGN.CENTER)
-    y+=0.72
-add_text(s,"能力成长图谱",8.92,1.55,3.0,0.34,15,INK,True)
-ability=[("表达能力",PINK),("组织能力",BLUE),("跨文化理解",MINT),("数字工具应用",YELLOW)]
-for i,(t,c) in enumerate(ability):
-    y=2.10+i*0.90
-    add_shape(s,MSO_SHAPE.ROUNDED_RECTANGLE,8.85,y,3.25,0.62,WHITE,LINE)
-    add_shape(s,MSO_SHAPE.OVAL,9.05,y+0.16,0.30,0.30,c)
-    add_text(s,t,9.52,y+0.10,2.35,0.40,12,INK,True)
-add_shape(s,MSO_SHAPE.ROUNDED_RECTANGLE,8.85,5.95,3.25,0.54,SOFTYELLOW,YELLOW)
-add_text(s,"经历 → 能力 → 行动",8.98,6.02,2.99,0.40,11,INK,True,align=PP_ALIGN.CENTER)
 
-# Slide 11 plan
-s=prs.slides.add_slide(prs.slide_layouts[6]); add_paper(s,"未来三年：把目标拆解成行动",11,"08 · MY NEXT STEPS")
-plans=[
-    (0.95,"大二","夯实基础",["持续学习法语、日语","积累专业实践","探索 AI 教学应用"],PINK,PALE_PINK),
-    (5.05,"大三","提升能力",["目标：雅思 7.5 分","计划考取国际中文教师相关证书","利用课程学习韩语"],BLUE,SOFTBLUE),
-    (9.15,"大四","拓展可能",["计划学习西班牙语","整理竞赛与实践成果","规划就业或深造"],MINT,SOFTMINT)
+for card in experience_cards:
+    x = card["x"]
+
+    add_section_number(
+        slide,
+        card["num"],
+        x,
+        1.94,
+    )
+
+    add_text(
+        slide,
+        card["region"],
+        x + 0.48,
+        1.98,
+        2.9,
+        0.22,
+        size=9,
+        color=C["steel"],
+        font=FONT_EN,
+        bold=True,
+    )
+
+    add_text(
+        slide,
+        card["title"],
+        x,
+        2.31,
+        3.7,
+        0.35,
+        size=17,
+        color=C["graphite"],
+        font=FONT_CN,
+        bold=True,
+    )
+
+    add_image_or_placeholder(
+        slide,
+        card["image"],
+        x,
+        2.83,
+        3.75,
+        2.45,
+        label=card["label"],
+    )
+
+    add_text(
+        slide,
+        card["cap_en"],
+        x,
+        5.48,
+        3.7,
+        0.22,
+        size=9,
+        color=C["steel"],
+        font=FONT_EN,
+        bold=True,
+    )
+
+    add_text(
+        slide,
+        card["cap_cn"],
+        x,
+        5.80,
+        3.7,
+        0.32,
+        size=13,
+        color=C["graphite"],
+        font=FONT_CN,
+        bold=True,
+    )
+
+    add_line(
+        slide,
+        x,
+        6.23,
+        x + 3.75,
+        6.23,
+        C["light_gray"],
+        0.7,
+    )
+
+add_bottom_conclusion(
+    slide,
+    "真实的跨文化沟通，不只是使用另一种语言，更是理解对方如何思考与学习。",
+    y=6.55,
+    size=15,
+)
+
+
+# ============================================================
+# 07. SLIDE 05 — TEACHING INSIGHT
+# ============================================================
+
+slide = new_slide()
+
+add_header(
+    slide,
+    "04",
+    5,
+    "从课堂观察到教学设计",
+    "FROM OBSERVATION TO ACTION",
+)
+
+# Left practice evidence panel
+add_rect(
+    slide,
+    0.66,
+    2.02,
+    4.12,
+    3.98,
+    C["white"],
+)
+
+add_text(
+    slide,
+    "PRACTICE",
+    0.94,
+    2.30,
+    2.6,
+    0.22,
+    size=10,
+    color=C["steel"],
+    font=FONT_EN,
+    bold=True,
+)
+
+add_text(
+    slide,
+    "教学实践证据",
+    0.94,
+    2.66,
+    3.4,
+    0.38,
+    size=19,
+    color=C["graphite"],
+    font=FONT_CN,
+    bold=True,
+)
+
+practice_items = [
+    "参与认识实习",
+    "参与教学展示活动并获得一等奖",
+    "观察留学生课堂",
+    "参与助教相关工作",
 ]
-add_line(s,2.10,2.10,11.05,2.10,LINE,2.0)
-for x,grade,title,items,c,f in plans:
-    add_shape(s,MSO_SHAPE.OVAL,x+1.25,1.84,0.50,0.50,c)
-    add_shape(s,MSO_SHAPE.ROUNDED_RECTANGLE,x,2.55,3.30,3.30,WHITE,LINE)
-    add_shape(s,MSO_SHAPE.RECTANGLE,x,2.55,3.30,0.68,c)
-    add_text(s,grade,x+0.15,2.63,3.00,0.48,20,INK,True,align=PP_ALIGN.CENTER)
-    add_text(s,title,x+0.20,3.42,2.90,0.38,15,INK,True,align=PP_ALIGN.CENTER)
-    yy=4.05
-    for item in items:
-        add_shape(s,MSO_SHAPE.OVAL,x+0.28,yy+0.08,0.12,0.12,c)
-        add_text(s,item,x+0.52,yy,2.50,0.34,10.5,INK,False)
-        yy+=0.53
-    add_tag(s,{"大二":"持续积累","大三":"目标突破","大四":"成果整合"}[grade],x+0.78,6.05,1.75,f,INK,10)
-add_text(s,"把长期愿望拆成每个阶段可以执行的行动。",3.50,6.55,6.5,0.25,12,MUTED,False,align=PP_ALIGN.CENTER)
 
-# Slide 12 closing
-s=prs.slides.add_slide(prs.slide_layouts[6]); set_bg(s)
-add_shape(s,MSO_SHAPE.RECTANGLE,0.34,0.28,12.65,6.94,WHITE,LINE)
-# scattered paper pieces
-add_shape(s,MSO_SHAPE.RECTANGLE,1.30,1.08,10.75,5.15,"F8F5EF","E7DED8")
-add_shape(s,MSO_SHAPE.RECTANGLE,1.48,0.95,10.75,5.15,WHITE,"E7DED8")
-add_shape(s,MSO_SHAPE.ROUNDED_RECTANGLE,0.92,0.75,2.20,0.45,PINK,"C98BAA")
-add_tag(s,"KEEP GROWING",1.85,1.38,1.65,PALE_PINK,INK,9.5)
-add_text(s,"让语言连接世界",2.0,2.10,9.3,0.62,34,INK,True,align=PP_ALIGN.CENTER)
-add_text(s,"让实践定义成长",2.0,2.82,9.3,0.62,34,INK,True,align=PP_ALIGN.CENTER)
-add_text(s,"持续学习  ·  跨文化理解  ·  教学创新",2.2,3.78,8.8,0.36,15,BLUE,True,align=PP_ALIGN.CENTER)
-add_text(s,"成长，是把每一次经历变成下一次行动的起点。",2.2,4.42,8.8,0.34,13,MUTED,False,align=PP_ALIGN.CENTER)
-add_photo_placeholder(s,10.35,4.92,1.35,1.62,"本人照片")
-add_shape(s,MSO_SHAPE.PARALLELOGRAM,1.20,5.70,1.10,0.24,YELLOW,None,transparency=12)
-add_text(s,"姓名｜学院｜专业",2.05,5.66,4.5,0.32,11,INK,False)
-add_text(s,"全国大学生职业规划大赛 · 成长赛道",6.50,6.45,4.80,0.28,10,MUTED,False,align=PP_ALIGN.RIGHT)
+add_multiline(
+    slide,
+    practice_items,
+    0.94,
+    3.32,
+    3.48,
+    1.7,
+    size=12,
+    color=C["slate"],
+    line_gap=12,
+    bullet=True,
+)
 
-# Save
-prs.save(out)
-print(f"已生成：{out}")
+add_line(
+    slide,
+    0.94,
+    5.28,
+    4.45,
+    5.28,
+    C["light_gray"],
+    0.6,
+)
+
+add_text(
+    slide,
+    "EVIDENCE FIRST",
+    0.94,
+    5.50,
+    3.0,
+    0.22,
+    size=9,
+    color=C["coral"],
+    font=FONT_EN,
+    bold=True,
+)
+
+add_text(
+    slide,
+    "以真实经历为依据，持续形成教学反思。",
+    0.94,
+    5.75,
+    3.45,
+    0.35,
+    size=11,
+    color=C["slate"],
+    font=FONT_CN,
+)
+
+# Right photo
+add_image_or_placeholder(
+    slide,
+    "teaching",
+    5.10,
+    2.02,
+    7.45,
+    2.28,
+    label="YOUR TEACHING / INTERNSHIP PHOTO",
+)
+
+add_text(
+    slide,
+    "CLASSROOM OBSERVATION & TEACHING PRACTICE",
+    5.10,
+    4.42,
+    7.4,
+    0.2,
+    size=9,
+    color=C["steel"],
+    font=FONT_EN,
+    bold=True,
+)
+
+# Analysis steps
+steps = [
+    {
+        "x": 5.10,
+        "num": "01",
+        "en": "OBSERVE",
+        "cn": "观察",
+        "desc": "学生是否理解教学内容？",
+    },
+    {
+        "x": 7.62,
+        "num": "02",
+        "en": "IDENTIFY",
+        "cn": "识别",
+        "desc": "知识如何转化为课堂活动？",
+    },
+    {
+        "x": 10.14,
+        "num": "03",
+        "en": "DESIGN",
+        "cn": "设计",
+        "desc": "如何回应学习者需求？",
+    },
+]
+
+for step in steps:
+    x = step["x"]
+
+    add_line(
+        slide,
+        x,
+        4.88,
+        x + 2.25,
+        4.88,
+        C["light_gray"],
+        0.7,
+    )
+
+    add_text(
+        slide,
+        step["num"],
+        x,
+        5.04,
+        0.45,
+        0.24,
+        size=12,
+        color=C["coral"] if step["num"] == "03" else C["steel"],
+        font=FONT_EN,
+        bold=True,
+    )
+
+    add_text(
+        slide,
+        step["en"],
+        x,
+        5.36,
+        2.2,
+        0.22,
+        size=9,
+        color=C["steel"],
+        font=FONT_EN,
+        bold=True,
+    )
+
+    add_text(
+        slide,
+        step["cn"],
+        x,
+        5.64,
+        2.2,
+        0.3,
+        size=15,
+        color=C["graphite"],
+        font=FONT_CN,
+        bold=True,
+    )
+
+    add_text(
+        slide,
+        step["desc"],
+        x,
+        5.98,
+        2.28,
+        0.45,
+        size=10,
+        color=C["slate"],
+        font=FONT_CN,
+    )
+
+add_bottom_conclusion(
+    slide,
+    "我开始关注的，不只是教师讲了什么，而是学生真正学会了什么。",
+    y=6.55,
+    size=15,
+)
+
+
+# ============================================================
+# 08. SLIDE 06 — AI-ASSISTED TEACHING
+# ============================================================
+
+slide = new_slide()
+
+add_header(
+    slide,
+    "05",
+    6,
+    "AI 辅助教学：从想法走向应用",
+    "EXPLORING AI-ASSISTED CHINESE LANGUAGE TEACHING",
+)
+
+# Left exploration panel
+add_rect(
+    slide,
+    0.66,
+    2.05,
+    3.55,
+    4.05,
+    C["white"],
+)
+
+add_text(
+    slide,
+    "MY EXPLORATION",
+    0.94,
+    2.34,
+    2.8,
+    0.22,
+    size=10,
+    color=C["steel"],
+    font=FONT_EN,
+    bold=True,
+)
+
+add_text(
+    slide,
+    "我的探索",
+    0.94,
+    2.73,
+    2.9,
+    0.4,
+    size=20,
+    color=C["graphite"],
+    font=FONT_CN,
+    bold=True,
+)
+
+exploration_items = [
+    "接触生成式人工智能",
+    "尝试搭建个人网页",
+    "思考 AI 与语言教学的结合方式",
+]
+
+add_multiline(
+    slide,
+    exploration_items,
+    0.94,
+    3.40,
+    2.95,
+    1.48,
+    size=12,
+    color=C["slate"],
+    line_gap=12,
+    bullet=True,
+)
+
+add_line(
+    slide,
+    0.94,
+    5.12,
+    3.90,
+    5.12,
+    C["light_gray"],
+    0.6,
+)
+
+add_text(
+    slide,
+    "FROM DIGITAL TOOLS",
+    0.94,
+    5.38,
+    2.8,
+    0.2,
+    size=9,
+    color=C["steel"],
+    font=FONT_EN,
+    bold=True,
+)
+
+add_text(
+    slide,
+    "TO TEACHING APPLICATIONS",
+    0.94,
+    5.67,
+    2.95,
+    0.2,
+    size=9,
+    color=C["coral"],
+    font=FONT_EN,
+    bold=True,
+)
+
+# Right title
+add_text(
+    slide,
+    "POTENTIAL APPLICATIONS",
+    4.60,
+    2.08,
+    4.5,
+    0.23,
+    size=10,
+    color=C["steel"],
+    font=FONT_EN,
+    bold=True,
+)
+
+# Three application modules
+ai_modules = [
+    {
+        "x": 4.60,
+        "num": "01",
+        "en": "CONTENT PREPARATION",
+        "cn": "教学内容整理",
+        "desc": "辅助整理知识点、生成教学素材初稿。",
+    },
+    {
+        "x": 7.28,
+        "num": "02",
+        "en": "INTERACTIVE LEARNING",
+        "cn": "课堂互动设计",
+        "desc": "探索词汇配对、情境对话与互动问答。",
+    },
+    {
+        "x": 9.96,
+        "num": "03",
+        "en": "CONTEXTUAL PRACTICE",
+        "cn": "情境化语言练习",
+        "desc": "围绕日常生活情境组织语言练习。",
+    },
+]
+
+for item in ai_modules:
+    x = item["x"]
+
+    add_rect(
+        slide,
+        x,
+        2.48,
+        2.40,
+        2.35,
+        C["white"],
+    )
+
+    add_rect(
+        slide,
+        x,
+        2.48,
+        2.40,
+        0.045,
+        C["coral"] if item["num"] == "02" else C["mist"],
+    )
+
+    add_text(
+        slide,
+        item["num"],
+        x + 0.18,
+        2.72,
+        0.45,
+        0.27,
+        size=14,
+        color=C["coral"] if item["num"] == "02" else C["steel"],
+        font=FONT_EN,
+        bold=True,
+    )
+
+    add_text(
+        slide,
+        item["en"],
+        x + 0.18,
+        3.12,
+        2.08,
+        0.38,
+        size=8,
+        color=C["steel"],
+        font=FONT_EN,
+        bold=True,
+    )
+
+    add_text(
+        slide,
+        item["cn"],
+        x + 0.18,
+        3.62,
+        2.05,
+        0.35,
+        size=14,
+        color=C["graphite"],
+        font=FONT_CN,
+        bold=True,
+    )
+
+    add_text(
+        slide,
+        item["desc"],
+        x + 0.18,
+        4.08,
+        2.02,
+        0.58,
+        size=10,
+        color=C["slate"],
+        font=FONT_CN,
+    )
+
+# Conceptual workflow
+add_text(
+    slide,
+    "CONCEPTUAL WORKFLOW",
+    4.60,
+    5.08,
+    3.3,
+    0.22,
+    size=9,
+    color=C["steel"],
+    font=FONT_EN,
+    bold=True,
+)
+
+workflow = [
+    ("教学目标", 4.60, 1.52),
+    ("AI 辅助设计", 6.38, 1.72),
+    ("教师审核", 8.40, 1.52),
+    ("课堂活动", 10.18, 1.52),
+]
+
+for label, x, w in workflow:
+    add_rect(
+        slide,
+        x,
+        5.46,
+        w,
+        0.58,
+        C["pale_coral"] if label == "教师审核" else C["light_gray"],
+    )
+
+    add_text(
+        slide,
+        label,
+        x + 0.05,
+        5.62,
+        w - 0.10,
+        0.22,
+        size=11,
+        color=C["graphite"],
+        font=FONT_CN,
+        bold=True,
+        align=PP_ALIGN.CENTER,
+        valign=MSO_ANCHOR.MIDDLE,
+    )
+
+# Small connecting lines
+for x1, x2 in [
+    (6.12, 6.33),
+    (8.14, 8.35),
+    (9.96, 10.13),
+]:
+    add_line(
+        slide,
+        x1,
+        5.75,
+        x2,
+        5.75,
+        C["steel"],
+        1.0,
+    )
+
+add_bottom_conclusion(
+    slide,
+    "技术提供可能，教师决定如何让学习真正发生。",
+    y=6.55,
+    size=16,
+)
+
+
+# ============================================================
+# 09. SLIDE 07 — CAREER ROADMAP
+# ============================================================
+
+slide = new_slide()
+
+add_header(
+    slide,
+    "06",
+    7,
+    "从专业积累走向职业实践",
+    "A FOUR-YEAR PLAN WITH MEASURABLE MILESTONES",
+)
+
+roadmap = [
+    {
+        "x": 0.66,
+        "num": "01",
+        "eng": "FOUNDATION",
+        "stage": "大二",
+        "title": "夯实基础",
+        "tasks": [
+            "系统学习专业课程",
+            "提升英语水平，持续学习法语",
+            "加强跨文化交流与课堂观察",
+        ],
+        "outputs": [
+            "专业知识积累",
+            "外语学习记录",
+            "教学观察与反思材料",
+        ],
+    },
+    {
+        "x": 4.73,
+        "num": "02",
+        "eng": "PRACTICE",
+        "stage": "大三",
+        "title": "提升专业能力",
+        "tasks": [
+            "结合课程安排学习韩语",
+            "了解并准备相关资格考试",
+            "参与教学实践与数字化探索",
+        ],
+        "outputs": [
+            "教学设计作品",
+            "课堂活动方案",
+            "教学作品集初稿",
+        ],
+    },
+    {
+        "x": 8.80,
+        "num": "03",
+        "eng": "TRANSITION",
+        "stage": "大四",
+        "title": "明确职业方向",
+        "tasks": [
+            "完成专业学习",
+            "拓展外语能力",
+            "明确就业或深造方向",
+        ],
+        "outputs": [
+            "完整教学作品集",
+            "职业发展方案",
+            "求职或升学材料",
+        ],
+    },
+]
+
+# Stage connector line
+add_line(
+    slide,
+    1.10,
+    2.20,
+    12.10,
+    2.20,
+    C["mist"],
+    1.3,
+)
+
+for item in roadmap:
+    x = item["x"]
+
+    # Stage marker
+    add_rect(
+        slide,
+        x,
+        2.04,
+        0.34,
+        0.34,
+        C["coral"] if item["num"] == "02" else C["steel"],
+    )
+
+    add_text(
+        slide,
+        item["num"],
+        x + 0.01,
+        2.10,
+        0.32,
+        0.17,
+        size=8,
+        color=C["white"],
+        font=FONT_EN,
+        bold=True,
+        align=PP_ALIGN.CENTER,
+    )
+
+    add_text(
+        slide,
+        item["eng"],
+        x + 0.50,
+        2.07,
+        2.7,
+        0.2,
+        size=9,
+        color=C["steel"],
+        font=FONT_EN,
+        bold=True,
+    )
+
+    # Main card
+    add_rect(
+        slide,
+        x,
+        2.63,
+        3.86,
+        3.38,
+        C["white"],
+    )
+
+    add_text(
+        slide,
+        item["stage"],
+        x + 0.24,
+        2.88,
+        1.2,
+        0.35,
+        size=21,
+        color=C["graphite"],
+        font=FONT_CN,
+        bold=True,
+    )
+
+    add_text(
+        slide,
+        item["title"],
+        x + 0.24,
+        3.31,
+        3.25,
+        0.34,
+        size=15,
+        color=C["graphite"],
+        font=FONT_CN,
+        bold=True,
+    )
+
+    add_line(
+        slide,
+        x + 0.24,
+        3.80,
+        x + 3.60,
+        3.80,
+        C["light_gray"],
+        0.6,
+    )
+
+    add_text(
+        slide,
+        "KEY ACTIONS",
+        x + 0.24,
+        3.97,
+        2.5,
+        0.2,
+        size=9,
+        color=C["steel"],
+        font=FONT_EN,
+        bold=True,
+    )
+
+    add_multiline(
+        slide,
+        item["tasks"],
+        x + 0.24,
+        4.25,
+        3.35,
+        0.94,
+        size=10,
+        color=C["slate"],
+        line_gap=4,
+        bullet=True,
+    )
+
+    add_line(
+        slide,
+        x + 0.24,
+        5.25,
+        x + 3.60,
+        5.25,
+        C["light_gray"],
+        0.6,
+    )
+
+    add_text(
+        slide,
+        "EXPECTED OUTPUTS",
+        x + 0.24,
+        5.39,
+        3.1,
+        0.2,
+        size=9,
+        color=C["coral"] if item["num"] == "02" else C["steel"],
+        font=FONT_EN,
+        bold=True,
+    )
+
+    add_multiline(
+        slide,
+        item["outputs"],
+        x + 0.24,
+        5.65,
+        3.30,
+        0.64,
+        size=10,
+        color=C["graphite"],
+        line_gap=2,
+        bullet=True,
+    )
+
+add_bottom_conclusion(
+    slide,
+    "每个阶段都有任务，每项任务都应沉淀为可展示的成果。",
+    y=6.55,
+    size=15,
+)
+
+
+# ============================================================
+# 10. SLIDE 08 — CLOSING
+# ============================================================
+
+slide = new_slide()
+
+# Closing image / visual area
+add_image_or_placeholder(
+    slide,
+    "ending",
+    8.52,
+    0.78,
+    4.03,
+    5.82,
+    label="YOUR SPEAKING / TEACHING PHOTO",
+    placeholder_fill=C["light_gray"],
+)
+
+add_text(
+    slide,
+    "CAREER VISION",
+    0.76,
+    0.78,
+    3.2,
+    0.24,
+    size=10,
+    color=C["steel"],
+    font=FONT_EN,
+    bold=True,
+)
+
+add_text(
+    slide,
+    "让中文走向世界，",
+    0.76,
+    2.02,
+    7.4,
+    0.65,
+    size=32,
+    color=C["graphite"],
+    font=FONT_CN,
+    bold=True,
+)
+
+add_text(
+    slide,
+    "让教育连接未来。",
+    0.76,
+    2.78,
+    7.4,
+    0.65,
+    size=32,
+    color=C["graphite"],
+    font=FONT_CN,
+    bold=True,
+)
+
+add_rect(
+    slide,
+    0.78,
+    3.70,
+    0.62,
+    0.045,
+    C["coral"],
+)
+
+add_text(
+    slide,
+    "LANGUAGE CONNECTS.",
+    0.78,
+    4.06,
+    4.6,
+    0.24,
+    size=11,
+    color=C["steel"],
+    font=FONT_EN,
+    bold=True,
+)
+
+add_text(
+    slide,
+    "EDUCATION EMPOWERS.",
+    0.78,
+    4.43,
+    4.6,
+    0.24,
+    size=11,
+    color=C["steel"],
+    font=FONT_EN,
+    bold=True,
+)
+
+add_text(
+    slide,
+    "谢谢各位评委老师。",
+    0.78,
+    5.42,
+    4.8,
+    0.38,
+    size=17,
+    color=C["graphite"],
+    font=FONT_CN,
+    bold=True,
+)
+
+add_line(
+    slide,
+    0.76,
+    6.95,
+    12.58,
+    6.95,
+    C["light_gray"],
+    0.7,
+)
+
+add_text(
+    slide,
+    "PERLE  /  INTERNATIONAL CHINESE EDUCATION",
+    0.76,
+    7.08,
+    7.0,
+    0.18,
+    size=8,
+    color=C["slate"],
+    font=FONT_EN,
+)
+
+add_text(
+    slide,
+    "08 / 08",
+    11.72,
+    7.07,
+    0.86,
+    0.2,
+    size=9,
+    color=C["graphite"],
+    font=FONT_EN,
+    align=PP_ALIGN.RIGHT,
+)
+
+
+# ============================================================
+# 11. DOCUMENT METADATA
+# ============================================================
+
+prs.core_properties.title = "让中文走向世界，让教育连接未来"
+prs.core_properties.subject = "大学生职业规划大赛"
+prs.core_properties.author = "Perle"
+prs.core_properties.keywords = (
+    "International Chinese Education, Career Development, "
+    "Cross-Cultural Communication, AI-Assisted Teaching"
+)
+prs.core_properties.comments = (
+    "Editable PowerPoint generated with python-pptx."
+)
+
+
+# ============================================================
+# 12. SAVE FILE
+# ============================================================
+
+output_path = BASE_DIR / OUTPUT_FILE
+prs.save(str(output_path))
+
+print("=" * 60)
+print("PowerPoint generated successfully.")
+print(f"Output: {output_path}")
+print(f"Slides: {len(prs.slides)}")
+print("Format: Editable .pptx")
+print("=" * 60)
